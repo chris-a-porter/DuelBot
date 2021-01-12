@@ -1518,7 +1518,7 @@ class Slayer(commands.Cog):
 
             for item in boostInfo[0]:
                 if item == True:
-                    ownedList.append('**')
+                    ownedList.append('~~')
                 elif item == False:
                     ownedList.append('')
 
