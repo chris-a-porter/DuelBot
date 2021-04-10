@@ -2,7 +2,7 @@ import os
 import math
 import psycopg2
 import requests
-from helpers.mathHelpers import RSMathHelpers
+from helpers.math_helpers import RSMathHelpers
 import globals
 from discord.ext import commands
 
@@ -12,37 +12,6 @@ class Economy(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-
-    # Returns the number of an item that belong to an user
-    async def getNumberOfItem(self, userId, table, columnName):
-
-        sql = f"""
-        SELECT
-        {columnName} {columnName}
-        FROM {table}
-        WHERE user_id = {userId}
-        """
-        value = 0
-
-        try:
-            conn = psycopg2.connect(DATABASE_URL)
-            cur = conn.cursor()
-            cur.execute(sql)
-
-            rows = cur.fetchall()
-
-            for row in rows:
-                value = row[0]
-
-            cur.close()
-            conn.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print("SOME GETTING NUMBER OF ITEM", error)
-            return 0
-        finally:
-            if conn is not None:
-                conn.close()
-            return value
 
     # Returns the value of an item based on the API call as an integer. Must use the item ID to make the API call
     async def getItemValue(self, itemId):

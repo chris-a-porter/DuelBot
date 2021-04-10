@@ -9,7 +9,7 @@ from cogs.osrsEmojis import ItemEmojis
 from cogs.loots import PotentialItems
 import globals
 from cogs.skilling import Skilling
-from helpers.mathHelpers import RSMathHelpers
+from helpers.math_helpers import RSMathHelpers
 from cogs.economy import Economy
 from discord.ext import commands
 

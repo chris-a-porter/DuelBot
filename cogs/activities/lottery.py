@@ -7,7 +7,7 @@ import psycopg2
 import time
 from datetime import datetime
 from cogs.osrsEmojis import ItemEmojis
-from helpers.mathHelpers import RSMathHelpers
+from helpers.math_helpers import RSMathHelpers
 from cogs.economy import Economy
 import threading
 import schedule

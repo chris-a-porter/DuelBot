@@ -327,9 +327,3 @@ slayer_masters = {
     "duradel": '<:Duradel:694794552011259955>',
     "chaeldar": '<:Chaeldar:694794552476696636>'
 }
-
-class ItemEmojis(commands.Cog):
-
-
-def setup(bot):
-    bot.add_cog(ItemEmojis(bot))

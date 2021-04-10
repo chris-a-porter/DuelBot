@@ -369,26 +369,26 @@ async def kill_monsters(self, ctx, monster_id, num_left):
         multiplier = 1
         # Low items (spiny helm, ear muffs, etc)
         for n in range(0, 10):
-            if boostData[n] == True:
+            if boostData[n] is True:
                 multiplier = multiplier * 1.01
 
         # Leaf bladed sword, battleaxe, rock hammer, and mirror shield
         for n in range(10, 14):
-            if boostData[n] == True:
+            if boostData[n] is True:
                 multiplier = multiplier * 1.025
 
         # Fire cape and abyssal whip
         for n in range(14, 16):
-            if boostData[n] == True:
+            if boostData[n] is True:
                 multiplier = multiplier * 1.05
 
         # Black mask and slayer helmet
         for n in range(16, 18):
-            if boostData[n] == True:
+            if boostData[n] is True:
                 multiplier = multiplier * 1.05
 
         async def calculatePrayerModifier(userId):
-            prayer_level = await Skilling(self.bot).getLevel(userId, 'prayer')
+            prayer_level = await get_level(userId, 'prayer')
 
             modifier = 1 + (prayer_level / 198)
 
@@ -398,7 +398,7 @@ async def kill_monsters(self, ctx, monster_id, num_left):
             return modifier
 
         async def calculateHerbloreModifier(userId):
-            herblore_level = await Skilling(self.bot).getLevel(userId, 'herblore')
+            herblore_level = await get_level(userId, 'herblore')
 
             modifier = 1
 
@@ -482,9 +482,9 @@ async def kill_monsters(self, ctx, monster_id, num_left):
     attackStyle = await getAttackStyle(ctx.author.id)
 
     # Calculate beginning level for the style being used, hitpoints, and slayer
-    startCombat = await Skilling(self.bot).getLevel(ctx.author.id, attackStyle)
-    startHitpoints = await Skilling(self.bot).getLevel(ctx.author.id, 'hitpoints')
-    startSlayer = await Skilling(self.bot).getLevel(ctx.author.id, 'slayer')
+    startCombat = await get_level(ctx.author.id, attackStyle)
+    startHitpoints = await get_level(ctx.author.id, 'hitpoints')
+    startSlayer = await get_level(ctx.author.id, 'slayer')
 
     dps = await calculateDPS(ctx.author.id, monster_id)
 
