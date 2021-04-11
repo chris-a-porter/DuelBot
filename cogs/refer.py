@@ -1,6 +1,6 @@
 import os
 import psycopg2
-from cogs.economy import Economy
+from cogs.economy.economy import Economy
 from discord.ext import commands
 
 DATABASE_URL = os.environ['DATABASE_URL']

@@ -1,6 +1,4 @@
-import discord
-from discord.ext import commands
-from cogs.economy.bank import Bank
+from cogs.economy.economy import Bank
 
 
 class User:

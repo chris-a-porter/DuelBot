@@ -1,12 +1,7 @@
-import asyncio
 import discord
 import os
-import random
-import math
-from cogs.economy import Economy
 import psycopg2
 from cogs.item_files.emojis_list import chambers_of_xeric_items, armadyl_items, bandos_items, zamorak_items, saradomin_items, slayer_items, dragon_items, zulrah_items
-from random import randint
 import globals
 from discord.ext import commands
 

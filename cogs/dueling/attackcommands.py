@@ -1,10 +1,4 @@
-import discord
 import os
-import math
-from cogs.loots import PotentialItems
-from cogs.economy import Economy
-from random import randint
-import globals
 from discord.ext import commands
 from cogs.dueling.special_attacks.dragon_claws import dragon_claws_attack
 

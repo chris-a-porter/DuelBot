@@ -5,7 +5,7 @@ import math
 import psycopg2
 import requests
 from cogs.osrsEmojis import ItemEmojis
-from cogs.economy import Economy
+from cogs.economy.economy import Economy
 from helpers.math_helpers import RSMathHelpers
 from random import randint
 import globals

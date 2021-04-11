@@ -8,7 +8,7 @@ import time
 from datetime import datetime
 from cogs.osrsEmojis import ItemEmojis
 from helpers.math_helpers import RSMathHelpers
-from cogs.economy import Economy
+from cogs.economy.economy import Economy
 import threading
 import schedule
 from discord.ext import commands
