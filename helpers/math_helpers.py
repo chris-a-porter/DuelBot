@@ -10,7 +10,7 @@ from osrsbox import items_api
 from random import randint
 from discord.ext import commands
 
-def numify(self, num):
+def numify(num):
     if type(num) == int or type(num) == float:
         return int(math.floor(num))
     elif type(num) == str:
@@ -41,9 +41,9 @@ def numify(self, num):
             return "couldn't multiply"
 
 
-def short_numify(self, num, multiplier):
+def short_numify(num, multiplier):
 
-    def removeLastCharForRound(string):
+    def remove_last_char_for_round(string):
         shortened = string
         if shortened[-1:] == '0':
             shortened = shortened[0:-1]
@@ -51,32 +51,33 @@ def short_numify(self, num, multiplier):
                 shortened = shortened[0:-1]
                 return shortened
             else:
-                return removeLastCharForRound(shortened)
+                return remove_last_char_for_round(shortened)
         else:
             return shortened
 
     try:
-        rawNumber = self.numify(num) * multiplier
+        raw_number = numify(num) * multiplier
 
         shortened = ''
-        if rawNumber >= 1000 * 1000 * 1000:
-            output = rawNumber/(1000 * 1000 * 1000)
+        if raw_number >= 1000 * 1000 * 1000:
+            output = raw_number/(1000 * 1000 * 1000)
             shortened = "{0:.2f}".format(output)
-            shortened = removeLastCharForRound(shortened)
+            shortened = remove_last_char_for_round(shortened)
             return f"{shortened}B"
-        elif rawNumber >= 1000 * 1000:
-            output = rawNumber/(1000 * 1000)
+        elif raw_number >= 1000 * 1000:
+            output = raw_number/(1000 * 1000)
             shortened = "{0:.2f}".format(output)
-            shortened = removeLastCharForRound(shortened)
+            shortened = remove_last_char_for_round(shortened)
             return f"{shortened}M"
-        elif rawNumber > 1000:
-            output = rawNumber/(1000)
+        elif raw_number > 1000:
+            output = raw_number/(1000)
             shortened = "{0:.2f}".format(output)
-            shortened = removeLastCharForRound(shortened)
+            shortened = remove_last_char_for_round(shortened)
             return f"{shortened}K"
         else:
-            return rawNumber
-    except:
+            return raw_number
+    except Exception as e:
+        print("Error short-numifying:", e)
         pass
 
 

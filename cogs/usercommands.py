@@ -1,16 +1,4 @@
-import asyncio
 import os
-import discord
-import psycopg2
-import uuid
-import random
-from random import randint
-from cogs.osrsEmojis import ItemEmojis
-from cogs.loots import PotentialItems
-import globals
-from cogs.skilling.skilling import Skilling
-from helpers.math_helpers import RSMathHelpers
-from cogs.economy.economy import Economy
 from discord.ext import commands
 
 DATABASE_URL = os.environ['DATABASE_URL']
@@ -26,6 +14,7 @@ class UserCommands(commands.Cog):
 
     @commands.command()
     async def invite(self, ctx):
+        await ctx.send("Hello!")
         return
 
     @commands.command()
@@ -43,6 +32,7 @@ class UserCommands(commands.Cog):
 
     @commands.command()
     async def rares(self, message):
+        return
 
     @commands.command()
     async def kd(self, message):

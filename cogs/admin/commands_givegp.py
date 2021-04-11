@@ -1,8 +1,14 @@
-async def givegp(self, ctx, *args):
-    quantity = args[1]
-    quantity = RSMathHelpers(self.bot).numify(args[1])
+from helpers.math_helpers import numify, short_numify
+from cogs.economy.store.give_item_to_user import give_item_to_user
 
-    shortQuant = RSMathHelpers(self.bot).shortNumify(quantity, 1)
+
+async def give_gp(ctx, *args):
+
+    print("ARGUMENTS HERE", ctx, *args)
+
+    quantity = numify(args[1])
+
+    short_quant = short_numify(quantity, 1)
 
     if type(quantity) != int:
         await ctx.send('Please enter a valid number.')
@@ -10,6 +16,6 @@ async def givegp(self, ctx, *args):
 
     person = args[0].replace('@', '').replace('>', '').replace('<', '').replace('!', '')
 
-    await Economy(self.bot).giveItemToUser(person, 'duel_users', 'gp', quantity)
-    await ctx.send(f"You gave {shortQuant} to <@!{person}>")
+    await give_item_to_user(person, 'duel_users', 'gp', quantity)
+    await ctx.send(f"You gave {short_quant} to <@!{person}>")
     return

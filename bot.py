@@ -14,16 +14,18 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-bot = discord.ext.commands.Bot(command_prefix = '=')
+bot = discord.ext.commands.Bot(command_prefix = '.')
 duels = {}
 lastMessages = {}
 DATABASE_URL = os.environ['DATABASE_URL']
 
 if __name__ == '__main__':
-    print("booting up")
+    print("DuelBot is booting up.")
 
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
+bot.load_extension('cogs.admin')
+
+# for filename in os.listdir('./cogs'):
+#     if filename.endswith('.py'):
+#         bot.load_extension(f'cogs.{filename[:-3]}')
 
 bot.run(os.environ['DISCORD_KEY'])
