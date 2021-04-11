@@ -8,7 +8,7 @@ from random import randint
 from cogs.osrsEmojis import ItemEmojis
 from cogs.loots import PotentialItems
 import globals
-from cogs.skilling import Skilling
+from cogs.skilling.skilling import Skilling
 from helpers.math_helpers import RSMathHelpers
 from cogs.economy import Economy
 from discord.ext import commands

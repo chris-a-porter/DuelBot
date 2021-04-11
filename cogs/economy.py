@@ -2,7 +2,7 @@ import os
 import math
 import psycopg2
 import requests
-from helpers.math_helpers import RSMathHelpers
+from helpers.math_helpers import numify
 import globals
 from discord.ext import commands
 
@@ -23,7 +23,7 @@ class Economy(commands.Cog):
             jsonResponse = response.json()
             itemPrice = jsonResponse['item']['current']['price']
             print("Price found", itemPrice)
-            return RSMathHelpers.numify(self, itemPrice)
+            return numify(itemPrice)
         except:
             print(f"Err fetching item {itemId} from Database.")
             return None

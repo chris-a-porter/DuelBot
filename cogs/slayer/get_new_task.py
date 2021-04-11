@@ -2,7 +2,7 @@ import psycopg2
 import os
 import random
 from random import randint
-from cogs.skilling.get_level import get_level
+from cogs.skilling.skilling import get_level
 from get_current_slayer_master import get_current_slayer_master
 
 DATABASE_URL = os.environ['DATABASE_URL']

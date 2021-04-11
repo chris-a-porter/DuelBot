@@ -1,7 +1,8 @@
 import discord
 from cogs.item_files.emojis_list import prayers, skills
 from cogs.economy.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
-from helpers.math_helpers import numify
+from helpers.math_helpers import numify, short_numify
+import math
 
 # Command to purchase prayer xp
 
@@ -43,7 +44,7 @@ async def buy_bones(self, ctx, amount):
         return
 
     else:
-        amount = RSMathHelpers(self.bot).numify(amount)
+        amount = numify(amount)
         if amount < 200:
             await ctx.send('You must purchase at least 1 xp. Each experience point costs 200 gp.')
             return
@@ -56,9 +57,9 @@ async def buy_bones(self, ctx, amount):
             return
 
         print("Didn't make it here")
-        shortAmount = RSMathHelpers(self.bot).shortNumify(amount, 1)
+        shortAmount = short_numify(amount, 1)
         prayerXP = math.floor(amount / 200)
-        shortPrayerXP = RSMathHelpers(self.bot).shortNumify(prayerXP, 1)
+        shortPrayerXP = short_numify(prayerXP, 1)
 
         if type(amount) != int:
 
