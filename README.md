@@ -40,7 +40,11 @@ COMING SOON
 * Torso
 * Void/pest control?
 
-
+### TODO
+* Banking features
+* Grand Exchange
+* PvP w/ leveraged stats
+* Reset and lock skills
 
 **Update history**
 ==================
