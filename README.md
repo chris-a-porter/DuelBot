@@ -60,19 +60,19 @@ COMING SOON
   - [ ] info
   - [ ] default
 - [X] .givegp (admin)
-- [ ] .fight
+- [X] .fight
   - [ ] attack commands
   - [ ] .fight [item/gp]/stake
-- [ ] .gp
+- [X] .gp
 - [ ] .pay
 - [ ] .buy
 - [ ] .sell
 - [ ] .items
 - [ ] .rares
-- [ ] .invite
-- [ ] .server
-- [ ] .hs/highscores
-- [ ] .refer
+- [X] .invite
+- [X] .server
+- [X] .hs/highscores
+- [X] .refer
 - [ ] .buybones
 - [ ] .buyherb
 - [ ] .slay
