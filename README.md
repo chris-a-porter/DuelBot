@@ -49,3 +49,33 @@ COMING SOON
 **Update history**
 ==================
 COMING SOON
+
+
+**Code refactor command checklist**
+- [X] .dice
+- [ ] .fc/Firecape
+- [ ] .daily
+- [ ] .lottery commands
+  - [ ] buy
+  - [ ] info
+  - [ ] default
+- [X] .givegp (admin)
+- [ ] .fight
+  - [ ] attack commands
+  - [ ] .fight [item/gp]/stake
+- [ ] .gp
+- [ ] .pay
+- [ ] .buy
+- [ ] .sell
+- [ ] .items
+- [ ] .rares
+- [ ] .invite
+- [ ] .server
+- [ ] .hs/highscores
+- [ ] .refer
+- [ ] .buybones
+- [ ] .buyherb
+- [ ] .slay
+- [ ] .mystats
+- [ ] .switch
+- [ ] .pk
