@@ -64,11 +64,11 @@ COMING SOON
   - [ ] attack commands
   - [ ] .fight [item/gp]/stake
 - [X] .gp
-- [ ] .pay
+- [X] .pay
 - [X] .buy
 - [X] .sell
-- [ ] .items
-- [ ] .rares
+- [X] .items
+- [X] .rares
 - [X] .invite
 - [X] .server
 - [X] .hs/highscores
