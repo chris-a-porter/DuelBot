@@ -54,11 +54,10 @@ COMING SOON
 **Code refactor command checklist**
 - [X] .dice
 - [ ] .fc/Firecape
-- [ ] .daily
-- [ ] .lottery commands
-  - [ ] buy
-  - [ ] info
-  - [ ] default
+- [X] .lottery commands
+  - [X] buy
+  - [X] info
+  - [X] default
 - [X] .givegp (admin)
 - [X] .fight
   - [ ] attack commands
@@ -75,7 +74,7 @@ COMING SOON
 - [X] .refer
 - [X] .buybones
 - [X] .buyherb
-- [ ] .slay
-- [ ] .mystats
-- [ ] .switch
-- [ ] .pk
+- [X] .slay
+- [X] .mystats
+- [X] .switch
+- [ ] .pk -- REMOVED TEMPORARILY
