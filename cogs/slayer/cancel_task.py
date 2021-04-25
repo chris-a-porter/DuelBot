@@ -4,7 +4,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def cancel_task(self, ctx):
+async def cancel_task(ctx):
     sql = f"""
     UPDATE user_skills
     SET slayer_task = 0, slayer_monster_count = 0, currently_slaying = false, slayer_points = slayer_points - 30

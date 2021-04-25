@@ -2,16 +2,17 @@ import psycopg2
 import os
 import random
 from random import randint
-from cogs.skilling.__init__ import get_level
-from get_current_slayer_master import get_current_slayer_master
+from cogs.skilling.get_level import get_level
+from .get_current_slayer_master import get_current_slayer_master
+from .slayer_masters import slayerMasters
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def get_new_task(self, user_id):
+async def get_new_task(user_id):
     # Get current master and slayer level
     current_master = await get_current_slayer_master(user_id)
-    current_level = get_level(user_id, 'slayer')
+    current_level = await get_level(user_id, 'slayer')
 
     task_id = None
     count = None
@@ -21,12 +22,12 @@ async def get_new_task(self, user_id):
     while task_id is None and ticker < 1000:
         ticker = ticker + 1
 
-        rolled_task = random.choice(list(self.slayerMasters[current_master]["tasks"]))
+        rolled_task = random.choice(list(slayerMasters[current_master]["tasks"]))
 
-        if current_level >= self.slayerMasters[current_master]["tasks"][rolled_task]["req"]:
-            task_id = self.slayerMasters[current_master]["tasks"][rolled_task]["id"]
-            task_info = self.slayerMasters[current_master]["tasks"][rolled_task]
-            count = randint(self.slayerMasters[current_master]["tasks"][rolled_task]["min"], self.slayerMasters[current_master]["tasks"][rolled_task]["max"])
+        if current_level >= slayerMasters[current_master]["tasks"][rolled_task]["req"]:
+            task_id = slayerMasters[current_master]["tasks"][rolled_task]["id"]
+            task_info = slayerMasters[current_master]["tasks"][rolled_task]
+            count = randint(slayerMasters[current_master]["tasks"][rolled_task]["min"], slayerMasters[current_master]["tasks"][rolled_task]["max"])
             break
 
     sql = f"""

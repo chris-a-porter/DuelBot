@@ -1,12 +1,13 @@
 import psycopg2
 import os
+from .get_current_slayer_task import get_current_slayer_task
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def set_slayer_master(self, ctx, master):
+async def set_slayer_master(ctx, master):
     master_name = master.lower().capitalize()
-    current_task = await self.getCurrentSlayerTask(ctx.author.id)
+    current_task = await get_current_slayer_task(ctx.author.id)
     if current_task[1] != 0:
         await ctx.send("You cannot switch slayer masters in the middle of a task.")
         return

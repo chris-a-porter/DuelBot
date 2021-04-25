@@ -1,18 +1,25 @@
 import psycopg2
+import asyncio
 import os
 from random import randint
 import math
-from cogs.skilling.__init__ import get_level
+import time
+from cogs.skilling.get_level import get_level
+import globals
+from .get_current_slayer_master import get_current_slayer_master
+from .slayer_masters import slayerMasters
+from ..item_files.emojis_list import skills
+from ..skilling.add_experience_to_stat import add_experience_to_stat
 
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def kill_monsters(self, ctx, monster_id, num_left):
-    taskMonster = None
-    for monster in self.all_db_monsters:
+async def kill_monsters(ctx, monster_id, num_left):
+    task_monster = None
+    for monster in globals.all_db_monsters:
         if monster.id == monster_id:
-            taskMonster = monster
+            task_monster = monster
             break
 
     # Returns an [item, rate] list that can be rolled to receive an item.
@@ -119,7 +126,7 @@ async def kill_monsters(self, ctx, monster_id, num_left):
         return attack_style
 
     # Calculate the DPS for the task based on user levels and monster defence
-    async def calculateDPS(user_id, monsterId):
+    async def calculateDPS(user_id, monster_id):
         attack = await get_level(user_id, 'attack')
         strength = await get_level(user_id, 'strength')
         defence = await get_level(user_id, 'defence')
@@ -128,10 +135,10 @@ async def kill_monsters(self, ctx, monster_id, num_left):
         magic = await get_level(user_id, 'magic')
         prayer = await get_level(user_id, 'prayer')
 
-        taskMonster = None
-        for monster in self.all_db_monsters:
-            if monster.id == monsterId:
-                taskMonster = monster
+        task_monster = None
+        for monster in globals.all_db_monsters:
+            if monster.id == monster_id:
+                task_monster = monster
 
         # Give an equipment bonus depending on the attack level of the player
         # Uses scimitars for reference
@@ -177,9 +184,9 @@ async def kill_monsters(self, ctx, monster_id, num_left):
 
         max_attack_roll = effective_attack_level * (attack_bonus + 64)
 
-        effective_monster_defence = taskMonster.defence_level + 9
+        effective_monster_defence = task_monster.defence_level + 9
 
-        effective_monster_equipment_bonus = taskMonster.defence_slash
+        effective_monster_equipment_bonus = task_monster.defence_slash
 
         max_defence_roll = effective_monster_defence * (effective_monster_equipment_bonus + 64)
 
@@ -190,9 +197,9 @@ async def kill_monsters(self, ctx, monster_id, num_left):
         else:
             hit_chance = max_attack_roll / (2 * max_defence_roll + 1)
 
-        currentStyle = await getAttackStyle(user_id)
+        current_style = await getAttackStyle(user_id)
 
-        if currentStyle == 'attack' or currentStyle == 'strength' or currentStyle == 'defence':
+        if current_style == 'attack' or current_style == 'strength' or current_style == 'defence':
             # Give an equipment bonus depending on the attack level of the player
             # Uses scimitars for reference
             equipment_bonus = 0
@@ -237,9 +244,9 @@ async def kill_monsters(self, ctx, monster_id, num_left):
 
             max_attack_roll = effective_attack_level * (attack_bonus + 64)
 
-            effective_monster_defence = taskMonster.defence_level + 9
+            effective_monster_defence = task_monster.defence_level + 9
 
-            effective_monster_equipment_bonus = taskMonster.defence_slash
+            effective_monster_equipment_bonus = task_monster.defence_slash
 
             max_defence_roll = effective_monster_defence * (effective_monster_equipment_bonus + 64)
 
@@ -254,60 +261,60 @@ async def kill_monsters(self, ctx, monster_id, num_left):
 
             return dps
 
-        elif currentStyle == 'ranged':
+        elif current_style == 'ranged':
 
-            rangedStrength = 4
+            ranged_strength = 4
             equipment = 0
             interval = 1.2
 
             if ranged < 5:  # Iron knives
-                rangedStrength = 4
+                ranged_strength = 4
                 equipment = 30
             elif ranged < 10:  # Steel knives
-                rangedStrength = 7
+                ranged_strength = 7
                 equipment = 35
             elif ranged < 20:  # Black knives
-                rangedStrength = 8
+                ranged_strength = 8
                 equipment = 40
             elif ranged < 30:  # Mithril knives
-                rangedStrength = 10
+                ranged_strength = 10
                 equipment = 45
             elif ranged < 40:  # Adamant knives
-                rangedStrength = 14
+                ranged_strength = 14
                 equipment = 50
             elif ranged < 50:  # Rune knives
-                rangedStrength = 24
+                ranged_strength = 24
                 equipment = 70
             elif ranged < 60:  # Magic shortbow, blue d'hide
-                rangedStrength = 49
+                ranged_strength = 49
                 equipment = 124
                 interval = 2.4
             elif ranged < 70:  # Magic shortbow, red d'hide
-                rangedStrength = 49
+                ranged_strength = 49
                 equipment = 129
                 interval = 2.4
             elif ranged < 75:  # Magic shortbow, black d'hide
-                rangedStrength = 49
+                ranged_strength = 49
                 equipment = 134
                 interval = 2.4
             elif ranged < 85:  # Blowpipe with adamant darts
-                rangedStrength = 50
+                ranged_strength = 50
                 equipment = 145
                 interval = 1.2
             elif ranged < 91:  # Blowpipe with rune darts
-                rangedStrength = 54
+                ranged_strength = 54
                 equipment = 149
                 interval = 1.2
             elif ranged < 97:  # Blowpipe with dragon darts
-                rangedStrength = 60
+                ranged_strength = 60
                 equipment = 153
                 interval = 1.2
 
-            max_hit = 1.3 + (ranged / 10) + (rangedStrength / 80) + ((ranged * rangedStrength) / 640)
+            max_hit = 1.3 + (ranged / 10) + (ranged_strength / 80) + ((ranged * ranged_strength) / 640)
 
             average_hit = max_hit / 2
             max_attack_roll = ranged * (equipment + 64)
-            max_defence_roll = (taskMonster.defence_level + 9) * (taskMonster.defence_ranged + 64)
+            max_defence_roll = (task_monster.defence_level + 9) * (task_monster.defence_ranged + 64)
 
             hit_chance = 0
 
@@ -322,6 +329,9 @@ async def kill_monsters(self, ctx, monster_id, num_left):
                 dps = dps + 0.125
 
             return dps
+
+        return 0.5
+
 
     # Calculate the user's damage % modifier
     async def calculateModifier(userId):
@@ -488,14 +498,18 @@ async def kill_monsters(self, ctx, monster_id, num_left):
 
     dps = await calculateDPS(ctx.author.id, monster_id)
 
+    print("DPS", dps)
+
     # Equiment modifier
     modifier = await calculateModifier(ctx.author.id)
+
+    print("MODIFIER", modifier)
 
     # Total damage dealt for the session
     totalDamage = dps * 1800 * modifier * 1.33
 
     # Maximum possible kills
-    maxKills = math.floor(totalDamage / taskMonster.hitpoints)
+    maxKills = math.floor(totalDamage / task_monster.hitpoints)
 
     # Default to max kills...
     numberKilled = maxKills
@@ -504,34 +518,34 @@ async def kill_monsters(self, ctx, monster_id, num_left):
         numberKilled = 3
         maxKills = 3
 
-    taskMessage = f"You have **{num_left - numberKilled} {taskMonster.name}** left on your task."
+    taskMessage = f"You have **{num_left - numberKilled} {task_monster.name}** left on your task."
 
     # But if the max amount of kills is greater than the amount left, just make it the amount left
     if maxKills > num_left:
         numberKilled = num_left
 
         # Get the current slayer master
-        master = await self.getCurrentSlayerMaster(ctx.author.id)
+        master = await get_current_slayer_master(ctx.author.id)
 
         # Read the number of points they'll get
-        points = self.slayerMasters[master]["points"]
+        points = slayerMasters[master]["points"]
 
         # Give slayer points
         await giveSlayerPoints(ctx.author.id, points)
 
         # If the user is getting points for their task, add it into the message.
-        pointMessage = ""
+        point_message = ""
         if points != 0:
-            pointMessage = f"and gained **{points}** slayer points"
+            point_message = f"and gained **{points}** slayer points"
 
-        taskMessage = f"You have finished your task {pointMessage}. Type *=slay task* to get a new one."
+        taskMessage = f"You have finished your task {point_message}. Type *=slay task* to get a new one."
     print("Num", numberKilled / maxKills, 1800 * (numberKilled / maxKills))
     await addTripTime(ctx, math.floor(1800 * (numberKilled / maxKills)))
 
     # HERE BEGINS THE DATABASE WRITING STUFF
 
     await ctx.send(
-        f"You begin slaying {taskMonster.name}s. You should return in about {math.ceil(30 * (numberKilled / maxKills))} minutes.")
+        f"You begin slaying {task_monster.name}s. You should return in about {math.ceil(30 * (numberKilled / maxKills))} minutes.")
 
     await asyncio.sleep(math.floor(1800 * (numberKilled / maxKills)))
 
@@ -541,17 +555,17 @@ async def kill_monsters(self, ctx, monster_id, num_left):
     timeModifier = math.floor(num_left / maxKills * 1800)
 
     # Calculate experience for the player
-    combatXP = numberKilled * taskMonster.hitpoints * 4
+    combatXP = numberKilled * task_monster.hitpoints * 4
     commaCombatXP = "{:,d}".format(int(combatXP))
-    hitpointsXP = numberKilled * taskMonster.hitpoints * 1.33
+    hitpointsXP = numberKilled * task_monster.hitpoints * 1.33
     commaHitpointsXP = "{:,d}".format(int(hitpointsXP))
-    slayerXP = numberKilled * taskMonster.slayer_xp
+    slayerXP = numberKilled * task_monster.slayer_xp
     commaSlayerXP = "{:,d}".format(int(slayerXP))
 
     # End combat levels
-    endCombat = await Skilling(self.bot).addExperienceToStat(ctx.author.id, attackStyle, combatXP)
-    endHitpoints = await Skilling(self.bot).addExperienceToStat(ctx.author.id, 'hitpoints', hitpointsXP)
-    endSlayer = await Skilling(self.bot).addExperienceToStat(ctx.author.id, 'slayer', slayerXP)
+    endCombat = await add_experience_to_stat(ctx.author.id, attackStyle, combatXP)
+    endHitpoints = await add_experience_to_stat(ctx.author.id, 'hitpoints', hitpointsXP)
+    endSlayer = await add_experience_to_stat(ctx.author.id, 'slayer', slayerXP)
 
     # Level up message placeholders
     combatLevelUp = ""
@@ -568,22 +582,22 @@ async def kill_monsters(self, ctx, monster_id, num_left):
         slayerLevelUp = f"You are now level {endSlayer} Slayer."
 
     # The emoji corresponding to the attack style being used
-    styleEmoji = None
+    style_emoji = None
     if attackStyle == 'attack':
-        styleEmoji = ItemEmojis.Skills.attack
+        style_emoji = skills['attack']
     elif attackStyle == 'strength':
-        styleEmoji = ItemEmojis.Skills.strength
+        style_emoji = skills['strength']
     elif attackStyle == 'defence':
-        styleEmoji = ItemEmojis.Skills.defence
+        style_emoji = skills['defence']
     elif attackStyle == 'ranged':
-        styleEmoji = ItemEmojis.Skills.ranged
+        style_emoji = skills['ranged']
 
-    itemMessage = ""
+    item_message = ""
 
     # Roll to see if the user receives a unique slayer drop
-    itemRoll = roll_for_item(taskMonster.id, numberKilled)
-    if itemRoll != None:
-        if itemRoll[1] == True:
+    item_roll = roll_for_item(task_monster.id, numberKilled)
+    if item_roll != None:
+        if item_roll[1] == True:
             async def checkForItem(item):
                 sql = f"""
                   SELECT
@@ -628,18 +642,18 @@ async def kill_monsters(self, ctx, monster_id, num_left):
                         conn.close()
 
             # Check to see if the user has the item
-            hasItem = await checkForItem(itemRoll[0])
-            if hasItem == False:
-                itemName = itemRoll[0].capitalize().replace('_', ' ')
-                sqlColumn = itemRoll[0]
+            has_item = await checkForItem(item_roll[0])
+            if has_item == False:
+                itemName = item_roll[0].capitalize().replace('_', ' ')
+                sqlColumn = item_roll[0]
 
                 # Give the user the item
                 await giveItem(sqlColumn)
 
                 # Update the item message
-                itemMessage = f"You have received **{itemName}** as a drop, granting a permanent **{itemRoll[2]}** boost to damage."
+                item_message = f"You have received **{itemName}** as a drop, granting a permanent **{item_roll[2]}** boost to damage."
 
-    message = f"{ItemEmojis.Skills.slayer} {ctx.author.mention} you have killed **{numberKilled} {taskMonster.name}**.{taskMessage}\nYou have gained:\n{commaCombatXP} {attackStyle.capitalize()} XP {styleEmoji} {combatLevelUp}\n{commaHitpointsXP} Hitpoints XP {ItemEmojis.Skills.hitpoints} {hitpointsLevelUp}\n{commaSlayerXP} Slayer XP {ItemEmojis.Skills.slayer} {slayerLevelUp}\n\n{itemMessage}"
+    message = f"{skills['slayer']} {ctx.author.mention} you have killed **{numberKilled} {task_monster.name}**.{taskMessage}\nYou have gained:\n{commaCombatXP} {attackStyle.capitalize()} XP {style_emoji} {combatLevelUp}\n{commaHitpointsXP} Hitpoints XP {skills['hitpoints']} {hitpointsLevelUp}\n{commaSlayerXP} Slayer XP {skills['slayer']} {slayerLevelUp}\n\n{item_message}"
 
     # Send a message with task info
     await ctx.send(message)

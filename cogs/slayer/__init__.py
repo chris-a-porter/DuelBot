@@ -1,18 +1,24 @@
-class Slayer(commands.Cog):
+from discord.ext import commands
+from .command_slay import command_slay
+from .command_switch import switch
+from .command_mystats import command_mystats
+import math
+
+
+class SlayerCommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
-    all_db_monsters = monsters_api.load()
-
     @commands.command()
     async def slay(self, ctx, *args):
+        await command_slay(ctx, *args)
         return
 
     @commands.command()
     async def switch(self, ctx, style):
+        await command_switch(ctx, style)
         return
-
 
     @switch.error
     async def switchError(self, ctx):
@@ -21,6 +27,7 @@ class Slayer(commands.Cog):
 
     @commands.command()
     async def mystats(self, ctx):
+        await command_mystats(ctx)
         return
 
 
@@ -34,3 +41,7 @@ class Slayer(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"You are already in the Fight Caves. There are {math.ceil(error.retry_after / 60)} minutes left in your attempt.")
+
+
+def setup(bot):
+    bot.add_cog(SlayerCommands(bot))

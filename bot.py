@@ -1,20 +1,11 @@
 import discord
+from discord.ext import commands
 import os
-import psycopg2
-import uuid
 import globals
 globals.init()
-from discord.ext import commands
-import math
-import asyncio
-import random
-from random import randint
-import PIL
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
 
-bot = discord.ext.commands.Bot(command_prefix = os.environ['PREFIX'])
+
+bot = commands.Bot(command_prefix = os.environ['PREFIX'])
 duels = {}
 lastMessages = {}
 DATABASE_URL = os.environ['DATABASE_URL']
@@ -28,6 +19,8 @@ bot.load_extension('cogs.activities')
 bot.load_extension('cogs.economy')
 bot.load_extension('cogs.skilling')
 bot.load_extension('cogs.misc')
+bot.load_extension('cogs.lottery')
+bot.load_extension('cogs.slayer')
 
 # for filename in os.listdir('./cogs'):
 #     if filename.endswith('.py'):

@@ -1,12 +1,25 @@
 import discord
 import math
 import time
+import globals
+from ..item_files.emojis_list import slayer_masters, skills, slayer_equipment, misc_items, slayer_items
+from .check_trip_time import checkTripTime
+from .check_if_currently_slaying import check_if_currently_slaying
+from .get_current_slayer_task import get_current_slayer_task
+from .kill_monsters import kill_monsters
+from .get_current_slayer_master import get_current_slayer_master
+from .slayer_masters import slayerMasters
+from .set_slayer_master import set_slayer_master
+from .get_new_task import get_new_task
+from .get_slayer_points import get_slayer_points
+from .calculate_slayer_boost_modifier import calculateModifier
+from ..skilling.get_combat_level import get_combat_level
 
 
-async def slay(self, ctx, *args):
+async def command_slay(ctx, *args):
     if len(args) == 0:
         # Kill monster on task
-        task = await self.getCurrentSlayerTask(ctx.author.id)
+        task = await get_current_slayer_task(ctx.author.id)
 
         # User does not have a task currently/has finished their last task
         if task[1] <= 0:
@@ -14,78 +27,78 @@ async def slay(self, ctx, *args):
             return
         else:
 
-            status = await checkIfActive(ctx)
+            status = await check_if_currently_slaying(ctx)
 
-            if status == None:
+            if status is None:
                 await ctx.send("Something went wrong, please try again.")
                 return
-            elif status == True:
-                finishTime = await checkTripTime(ctx)
-                timeDiff = finishTime - math.floor(time.time())
-                minutes = math.floor(timeDiff / 60)
+            elif status is True:
+                finish_time = await checkTripTime(ctx)
+                time_diff = finish_time - math.floor(time.time())
+                minutes = math.floor(time_diff / 60)
                 if minutes > 0:
 
                     await ctx.send(f"You are currently slaying. You will be done in about {minutes} minutes.")
                     return
                 else:
                     # Number of monsters
-                    numLeft = task[1]
+                    num_left = task[1]
 
-                    await self.killMonsters(ctx, task[0], task[1])
+                    await kill_monsters(ctx, task[0], task[1])
 
-            elif status == False:
+            elif status is False:
                 # Number of monsters
-                numLeft = task[1]
+                num_left = task[1]
 
-                await self.killMonsters(ctx, task[0], task[1])
+                await kill_monsters(ctx, task[0], task[1])
 
     elif args[0] == 'master':
 
         # If there was nothing else provided
         if len(args) == 1:
-            currentMaster = await self.getCurrentSlayerMaster(ctx.author.id)
+            current_master = await get_current_slayer_master(ctx.author.id)
             await ctx.send(
-                f"""Your current slayer master is **{currentMaster.capitalize()}**.\nTo switch masters, type *=slay master [name]*\nAvailable slayer masters:\n{ItemEmojis.SlayerMasters.turael} *Turael - 3+ combat\n{ItemEmojis.SlayerMasters.mazchna} Mazchna - 20+ combat\n{ItemEmojis.SlayerMasters.vannaka} Vannaka - 40+ combat\n{ItemEmojis.SlayerMasters.chaeldar} Chaeldar - 70+ combat\n{ItemEmojis.SlayerMasters.konar} Konar - 75+ combat\n{ItemEmojis.SlayerMasters.nieve} Nieve - 85+ combat\n{ItemEmojis.SlayerMasters.duradel} Duradel - 100+ combat*""")
+                f"""Your current slayer master is **{current_master.capitalize()}**.\nTo switch masters, type *=slay master [name]*\nAvailable slayer masters:\n{slayer_masters['turael']} *Turael - 3+ combat\n{slayer_masters['mazchna']} Mazchna - 20+ combat\n{slayer_masters['vannaka']} Vannaka - 40+ combat\n{slayer_masters['chaeldar']} Chaeldar - 70+ combat\n{slayer_masters['konar']} Konar - 75+ combat\n{slayer_masters['nieve']} Nieve - 85+ combat\n{slayer_masters['duradel']} Duradel - 100+ combat*""")
             return
 
         # Translate the argument into key for slayerMasters dictionary
         choice = args[1].lower()
 
         # User has entered a valid slayer master
-        if choice in self.slayerMasters:
+        if choice in slayerMasters:
 
             # Get the player's combat level
-            combatLevel = await Skilling(self.bot).getCombatLevel(ctx.author.id)
+            combat_level = await get_combat_level(ctx.author.id)
 
             # If the user's combat level is not high enough
-            if combatLevel < self.slayerMasters[choice]["req"]:
-                requirement = self.slayerMasters[choice]["req"]
+            if combat_level < slayerMasters[choice]["req"]:
+                requirement = slayerMasters[choice]["req"]
                 choice = choice.capitalize()
                 await ctx.send(
-                    f"You need at least **{requirement} combat** to use {choice} as a slayer master. \nYou are currently **{combatLevel} combat**.")
+                    f"You need at least **{requirement} combat** to use {choice} as a slayer master. \nYou are currently **{combat_level} combat**.")
                 return
             else:
                 # User has the combat requirement
                 choice = choice.capitalize()
-                await self.setSlayerMaster(ctx, choice)
+                await set_slayer_master(ctx, choice)
                 return
 
         # If the user did not enter a valid slayer master
         else:
             # User did not enter a valid slayer master
-            currentTask = await self.getCurrentSlayerTask(ctx.author.id)
-            if currentTask[1] == 0:
-                currentMaster = await self.getCurrentSlayerMaster(ctx.author.id)
+            current_task = await get_current_slayer_task(ctx.author.id)
+            if current_task[1] == 0:
+                current_master = await get_current_slayer_master(ctx.author.id)
 
                 await ctx.send(f"""Please choose a valid slayer master.
-                 {ItemEmojis.SlayerMasters.turael} *Turael - 3+ combat
-                 {ItemEmojis.SlayerMasters.mazchna} Mazchna - 20+ combat
-                 {ItemEmojis.SlayerMasters.vannaka} Vannaka - 40+ combat
-                 {ItemEmojis.SlayerMasters.chaeldar} Chaeldar - 70+ combat
-                 {ItemEmojis.SlayerMasters.konar} Konar - 75+ combat
-                 {ItemEmojis.SlayerMasters.nieve} Nieve - 85+ combat
-                 {ItemEmojis.SlayerMasters.duradel} Duradel - 100+ combat
-                 Your current slayer master is **{currentMaster}**""")
+                 {slayer_masters['turael']} *Turael - 3+ combat
+                 {slayer_masters['mazchna']} Mazchna - 20+ combat
+                 {slayer_masters['vannaka']} Vannaka - 40+ combat
+                 {slayer_masters['chaeldar']} Chaeldar - 70+ combat
+                 {slayer_masters['konar']} Konar - 75+ combat
+                 {slayer_masters['nieve']} Nieve - 85+ combat
+                 {slayer_masters['duradel']} Duradel - 100+ combat
+                 Your current slayer master is **{current_master}**""")
                 return
             else:
                 # Prevent switching masters in the middle of a task
@@ -93,26 +106,26 @@ async def slay(self, ctx, *args):
                 return
 
     elif args[0] == 'task':
-        task = await self.getCurrentSlayerTask(ctx.author.id)
+        task = await get_current_slayer_task(ctx.author.id)
 
         # If the player has nothing left in their current task, give em' a new one
         if task[1] <= 0:
-            newTask = await self.getNewTask(ctx.author.id)
+            new_task = await get_new_task(ctx.author.id)
             name = None
 
-            for monster in self.all_db_monsters:
-                if monster.id == newTask[0]:
+            for monster in globals.all_db_monsters:
+                if monster.id == new_task[0]:
                     name = monster.name
                     break
 
             await ctx.send(
-                f"You have been assigned to kill **{newTask[1]} {name}**. Type *=slay* to begin your task.")
+                f"You have been assigned to kill **{new_task[1]} {name}**. Type *=slay* to begin your task.")
 
 
         # If they already have a task
         else:
             name = None
-            for monster in self.all_db_monsters:
+            for monster in globals.all_db_monsters:
 
                 if monster.id == task[0]:
                     name = monster.name
@@ -132,9 +145,9 @@ async def slay(self, ctx, *args):
          **=slay master (new master)** - switch to a new slayer master. Requires appropriate combat level.
          **=switch (attack/strength/defence/ranged/magic)** - switch to training a different skill
          **=mystats** - view current stats
-         **=buyherb** (GP amount) - buy {ItemEmojis.Skills.herblore} Herblore XP for 350 gp/xp
+         **=buyherb** (GP amount) - buy {skills['herblore']} Herblore XP for 350 gp/xp
          **=buyherb info** - shows bonuses from Herblore
-         **=buybones** (GP amount) - buy {ItemEmojis.Skills.prayer} Prayer XP for 200 gp/xp
+         **=buybones** (GP amount) - buy {skills['prayer']} Prayer XP for 200 gp/xp
          **=buybones info** - shows bonuses from Prayer
          """
 
@@ -146,22 +159,22 @@ async def slay(self, ctx, *args):
         await ctx.send(embed=embed)
 
     elif args[0] == 'points':
-        points = await self.getSlayerPoints(ctx)
-        await ctx.send(f"{ItemEmojis.Skills.slayer} You have {points} slayer points.")
+        points = await get_slayer_points(ctx)
+        await ctx.send(f"{skills['slayer']} You have {points} slayer points.")
         return
 
     elif args[0] == 'cancel':
-        points = await self.getSlayerPoints(ctx)
+        points = await get_slayer_points(ctx)
 
-        status = await checkIfActive(ctx)
+        status = await check_if_currently_slaying(ctx)
 
-        if status == None:
+        if status is None:
             await ctx.send("Something went wrong, please try again.")
             return
-        elif status == True:
-            finishTime = await checkTripTime(ctx)
-            timeDiff = finishTime - math.floor(time.time())
-            minutes = math.floor(timeDiff / 60)
+        elif status is True:
+            finish_time = await checkTripTime(ctx)
+            time_diff = finish_time - math.floor(time.time())
+            minutes = math.floor(time_diff / 60)
             if minutes > 0:
                 await ctx.send(
                     f"You cannot cancel a task while you are currently slaying. You will be done in about {minutes} minutes.")
@@ -169,45 +182,45 @@ async def slay(self, ctx, *args):
 
     elif args[0] == 'items':
 
-        boostInfo = await calculateModifier(ctx.author.id)
+        boost_info = await calculateModifier(ctx.author.id)
 
-        modifier = boostInfo[1] - 1
+        modifier = boost_info[1] - 1
 
         modifier = modifier * 100
 
-        boostPercent = "{0:.2f}".format(modifier)
+        boost_percent = "{0:.2f}".format(modifier)
 
-        ownedList = []
+        owned_list = []
 
-        for item in boostInfo[0]:
-            if item == True:
-                ownedList.append('**')
-            elif item == False:
-                ownedList.append('')
+        for item in boost_info[0]:
+            if item is True:
+                owned_list.append('**')
+            elif item is False:
+                owned_list.append('')
 
-        one_percent = f"""{ItemEmojis.SlayerEquipment.faceMask} {ownedList[0]}Face mask{ownedList[0]}
-         {ItemEmojis.SlayerEquipment.nosePeg} {ownedList[1]}Nose peg{ownedList[1]}
-         {ItemEmojis.SlayerEquipment.spinyHelmet} {ownedList[2]}Spiny helmet{ownedList[2]}
-         {ItemEmojis.SlayerEquipment.earmuffs} {ownedList[3]}Earmuffs{ownedList[3]}
-         {ItemEmojis.SlayerEquipment.iceCooler} {ownedList[4]}Ice cooler{ownedList[4]}
-         {ItemEmojis.SlayerEquipment.bagOfSalt} {ownedList[5]}Bag of salt{ownedList[5]}
-         {ItemEmojis.SlayerEquipment.witchwoodIcon} {ownedList[6]}Witchwood icon{ownedList[6]}
-         {ItemEmojis.SlayerEquipment.insulatedBoots} {ownedList[7]}Insulated boots{ownedList[7]}
-         {ItemEmojis.SlayerEquipment.fungicide} {ownedList[8]}Fungicide{ownedList[8]}
-         {ItemEmojis.SlayerEquipment.slayerGloves} {ownedList[9]}Slayer gloves{ownedList[9]}"""
+        one_percent = f"""{slayer_equipment['face_mask']} {owned_list[0]}Face mask{owned_list[0]}
+         {slayer_equipment['nose_peg']} {owned_list[1]}Nose peg{owned_list[1]}
+         {slayer_equipment['spiny_helmet']} {owned_list[2]}Spiny helmet{owned_list[2]}
+         {slayer_equipment['ear_muffs']} {owned_list[3]}Earmuffs{owned_list[3]}
+         {slayer_equipment['ice_cooler']} {owned_list[4]}Ice cooler{owned_list[4]}
+         {slayer_equipment['bag_of_salt']} {owned_list[5]}Bag of salt{owned_list[5]}
+         {slayer_equipment['witchwood_icon']} {owned_list[6]}Witchwood icon{owned_list[6]}
+         {slayer_equipment['insulated_boots']} {owned_list[7]}Insulated boots{owned_list[7]}
+         {slayer_equipment['fungicide']} {owned_list[8]}Fungicide{owned_list[8]}
+         {slayer_equipment['slayer_gloves']} {owned_list[9]}Slayer gloves{owned_list[9]}"""
 
-        two_point_five_percent = f"""{ItemEmojis.SlayerEquipment.leafBladedSword} {ownedList[10]}Lead-bladed sword{ownedList[10]}
-         {ItemEmojis.SlayerEquipment.leafBladedBattleaxe} {ownedList[11]}Leaf-bladed battleaxe{ownedList[11]}
-         {ItemEmojis.SlayerEquipment.rockHammer} {ownedList[12]}Rock hammer{ownedList[12]}
-         {ItemEmojis.SlayerEquipment.mirrorShield} {ownedList[13]}Mirror shield{ownedList[13]}"""
+        two_point_five_percent = f"""{slayer_equipment['leaf_bladed_sword']} {owned_list[10]}Lead-bladed sword{owned_list[10]}
+         {slayer_equipment['leaf_bladed_battleaxe']} {owned_list[11]}Leaf-bladed battleaxe{owned_list[11]}
+         {slayer_equipment['rock_hammer']} {owned_list[12]}Rock hammer{owned_list[12]}
+         {slayer_equipment['mirror_shield']} {owned_list[13]}Mirror shield{owned_list[13]}"""
 
-        five_percent = f"""{ItemEmojis.Misc.fireCape} {ownedList[14]}Fire cape{ownedList[14]}
-         {ItemEmojis.SlayerItems.abyssalWhip} {ownedList[15]}Abyssal whip{ownedList[15]}"""
+        five_percent = f"""{misc_items['fire_cape']} {owned_list[14]}Fire cape{owned_list[14]}
+         {slayer_items['abyssal_whip']} {owned_list[15]}Abyssal whip{owned_list[15]}"""
 
-        ten_percent = f"""{ItemEmojis.SlayerEquipment.blackMask} {ownedList[16]}Black mask{ownedList[16]}
-         {ItemEmojis.SlayerEquipment.slayerHelmet} {ownedList[17]}Slayer helmet{ownedList[17]}"""
+        ten_percent = f"""{slayer_equipment['black_mask']} {owned_list[16]}Black mask{owned_list[16]}
+         {slayer_equipment['slayer_helmet']} {owned_list[17]}Slayer helmet{owned_list[17]}"""
 
-        embed = discord.Embed(title="Slayer items", description=f"Total modifier: +{boostPercent}%",
+        embed = discord.Embed(title="Slayer items", description=f"Total modifier: +{boost_percent}%",
                               color=discord.Color.dark_red())
         embed.add_field(name='1% boost', value=one_percent, inline=True)
         embed.add_field(name='2.5% boost', value=two_point_five_percent, inline=True)

@@ -4,7 +4,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def get_current_slayer_task(self, user_id):
+async def get_current_slayer_task(user_id):
     sql = F"""SELECT
     slayer_task,
     slayer_monster_count

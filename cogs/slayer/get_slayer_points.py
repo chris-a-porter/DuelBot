@@ -4,7 +4,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def get_slayer_points(self, ctx):
+async def get_slayer_points(ctx):
     sql = f"""
     SELECT
     slayer_points

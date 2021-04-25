@@ -4,7 +4,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def get_current_slayer_master(self, user_id):
+async def get_current_slayer_master(user_id):
     sql = F"""SELECT
        slayer_master
        FROM user_skills

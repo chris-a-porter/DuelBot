@@ -1,34 +1,36 @@
 import psycopg2
 import os
 import discord
+from ..skilling.get_level import get_level
+from ..skilling.get_combat_level import get_combat_level
+from cogs.item_files.emojis_list import skills, misc_items
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def mystats(self, ctx):
-    await Skilling(self.bot).createSkillTable(ctx.author.id)
+async def command_mystats(ctx):
 
-    combat = await Skilling(self.bot).getCombatLevel(ctx.author.id)
-    attack = await Skilling(self.bot).getLevel(ctx.author.id, 'attack')
-    strength = await Skilling(self.bot).getLevel(ctx.author.id, 'strength')
-    defence = await Skilling(self.bot).getLevel(ctx.author.id, 'defence')
-    hitpoints = await Skilling(self.bot).getLevel(ctx.author.id, 'hitpoints')
-    ranged = await Skilling(self.bot).getLevel(ctx.author.id, 'ranged')
-    magic = await Skilling(self.bot).getLevel(ctx.author.id, 'magic')
-    herblore = await Skilling(self.bot).getLevel(ctx.author.id, 'herblore')
-    prayer = await Skilling(self.bot).getLevel(ctx.author.id, 'prayer')
-    slayer = await Skilling(self.bot).getLevel(ctx.author.id, 'slayer')
+    combat = await get_combat_level(ctx.author.id)
+    attack = await get_level(ctx.author.id, 'attack')
+    strength = await get_level(ctx.author.id, 'strength')
+    defence = await get_level(ctx.author.id, 'defence')
+    hitpoints = await get_level(ctx.author.id, 'hitpoints')
+    ranged = await get_level(ctx.author.id, 'ranged')
+    magic = await get_level(ctx.author.id, 'magic')
+    herblore = await get_level(ctx.author.id, 'herblore')
+    prayer = await get_level(ctx.author.id, 'prayer')
+    slayer = await get_level(ctx.author.id, 'slayer')
 
-    skills_column_1 = f"""{ItemEmojis.Skills.hitpoints} {hitpoints}
-    {ItemEmojis.Misc.combat} {combat}
-    {ItemEmojis.Skills.attack} {attack}
-    {ItemEmojis.Skills.strength} {strength}
-    {ItemEmojis.Skills.defence} {defence}
-    {ItemEmojis.Skills.ranged} {ranged}
-    {ItemEmojis.Skills.magic} {magic}
-    {ItemEmojis.Skills.prayer} {prayer}
-    {ItemEmojis.Skills.herblore} {herblore}
-    {ItemEmojis.Skills.slayer} {slayer}
+    skills_column_1 = f"""{skills['hitpoints']} {hitpoints}
+    {misc_items['combat]']} {combat}
+    {skills['attack']} {attack}
+    {skills['strength']} {strength}
+    {skills['defence']} {defence}
+    {skills['ranged']} {ranged}
+    {skills['magic']} {magic}
+    {skills['prayer']} {prayer}
+    {skills['herblore']} {herblore}
+    {skills['slayer']} {slayer}
     """
 
     embed = discord.Embed(title=f"DuelBot stats for {ctx.author.mention}", color=discord.Color.blurple())

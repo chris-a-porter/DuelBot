@@ -1,11 +1,11 @@
 import requests
 import math
-
+from .generate_pk_loot import generate_pk_loot
 # Returns dict of loot
 
 
-async def roll_random_loot(self, ctx, min_rolls, max_rolls, modifier):
-    loot_dict = await self.rollForLoot(ctx, min_rolls, max_rolls, modifier)
+async def roll_random_loot(ctx, min_rolls, max_rolls, modifier):
+    loot_dict = await generate_pk_loot(ctx, min_rolls, max_rolls, modifier)
 
     for itemKey in loot_dict.keys():
         url = f'http://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item={itemKey}'

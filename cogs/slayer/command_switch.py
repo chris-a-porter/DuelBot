@@ -4,8 +4,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def switch(self, ctx, style):
-    await Skilling(self.bot).createSkillTable(ctx.author.id)
+async def switch(ctx, style):
 
     styles = ["attack", "strength", "defence", "ranged", "magic"]
 
