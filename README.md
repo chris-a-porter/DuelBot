@@ -73,8 +73,8 @@ COMING SOON
 - [X] .server
 - [X] .hs/highscores
 - [X] .refer
-- [?] .buybones
-- [?] .buyherb
+- [ ] .buybones
+- [ ] .buyherb
 - [ ] .slay
 - [ ] .mystats
 - [ ] .switch
