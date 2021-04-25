@@ -1,11 +1,12 @@
 import os
 import psycopg2
+from cogs.item_files.emojis_list import misc_items
 
 DATABASE_URL = os.environ['DATABASE_URL']
+# Retrieve the amount of GP a user has and send it to the channel they requested it from
 
 
-async def gp(self, message):
-    await self.createTablesForUser(message.author)
+async def gp(message):
 
     sql = f"""
     SELECT
@@ -23,8 +24,8 @@ async def gp(self, message):
         rows = cur.fetchall()
 
         for row in rows:
-            commaMoney = "{:,d}".format(row[0])
-            await message.send(f'{ItemEmojis.Coins.coins} You have {commaMoney} GP {ItemEmojis.Coins.coins}')
+            comma_money = "{:,d}".format(row[0])
+            await message.send(f'{misc_items["coins"]} You have {comma_money} GP.')
 
         cur.close()
         conn.commit()

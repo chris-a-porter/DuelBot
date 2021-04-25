@@ -5,7 +5,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def hs(self, ctx, *args):
+async def hs(ctx, *args):
     # Send a placehlder message
     placeholderEmbed = discord.Embed(title="DuelBot highscores", description="Checking the highscores...",
                                      color=discord.Color.gold())

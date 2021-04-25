@@ -1,12 +1,12 @@
 import discord
 import psycopg2
 import os
+from cogs.item_files.emojis_list import rares
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def rares(self, message):
-    await self.createTablesForUser(message.author)
+async def command_rares(message):
 
     cmds = f"""
     SELECT
@@ -38,19 +38,19 @@ async def rares(self, message):
 
         for row in rows:
             embed = discord.Embed(title=f"{message.author.id}'s rares", color=discord.Color.blurple())
-            embed.add_field(name=f"**Red partyhat** {ItemEmojis.Rares.redPartyhat}", value=row[0])
-            embed.add_field(name=f"**Yellow partyhat** {ItemEmojis.Rares.yellowPartyhat}", value=row[1])
-            embed.add_field(name=f"**Blue partyhat** {ItemEmojis.Rares.bluePartyhat}", value=row[2])
-            embed.add_field(name=f"**Green partyhat** {ItemEmojis.Rares.greenPartyhat}", value=row[3])
-            embed.add_field(name=f"**Purple partyhat** {ItemEmojis.Rares.purplePartyhat}", value=row[4])
-            embed.add_field(name=f"**White partyhat** {ItemEmojis.Rares.whitePartyhat}", value=row[5])
-            embed.add_field(name=f"**Christmas cracker** {ItemEmojis.Rares.christmasCracker}", value=row[6])
-            embed.add_field(name=f"**Red h'ween mask** {ItemEmojis.Rares.redHween}", value=row[7])
-            embed.add_field(name=f"**Blue h'ween mask** {ItemEmojis.Rares.blueHween}", value=row[8])
-            embed.add_field(name=f"**Green h'ween mask** {ItemEmojis.Rares.greenHween}", value=row[9])
-            embed.add_field(name=f"**Santa hat** {ItemEmojis.Rares.santaHat}", value=row[10])
-            embed.add_field(name=f"**Pumpkin** {ItemEmojis.Rares.pumpkin}", value=row[11])
-            embed.add_field(name=f"**Easter egg** {ItemEmojis.Rares.easterEgg}", value=row[12])
+            embed.add_field(name=f"**Red partyhat** {rares['red_partyhat']}", value=row[0])
+            embed.add_field(name=f"**Yellow partyhat** {rares['yellow_partyhat']}", value=row[1])
+            embed.add_field(name=f"**Blue partyhat** {rares['blue_partyhat']}", value=row[2])
+            embed.add_field(name=f"**Green partyhat** {rares['green_partyhat']}", value=row[3])
+            embed.add_field(name=f"**Purple partyhat** {rares['purple_partyhat']}", value=row[4])
+            embed.add_field(name=f"**White partyhat** {rares['white_partyhat']}", value=row[5])
+            embed.add_field(name=f"**Christmas cracker** {rares['christmas_cracker']}", value=row[6])
+            embed.add_field(name=f"**Red h'ween mask** {rares['red_hween']}", value=row[7])
+            embed.add_field(name=f"**Blue h'ween mask** {rares['blue_hween']}", value=row[8])
+            embed.add_field(name=f"**Green h'ween mask** {rares['green_hween']}", value=row[9])
+            embed.add_field(name=f"**Santa hat** {rares['santa_hat']}", value=row[10])
+            embed.add_field(name=f"**Pumpkin** {rares['pumpkin']}", value=row[11])
+            embed.add_field(name=f"**Easter egg** {rares['easter_egg']}", value=row[12])
 
             await message.send(embed=embed)
 

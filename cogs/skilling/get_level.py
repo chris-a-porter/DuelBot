@@ -1,10 +1,11 @@
 import psycopg2
 import os
+from helpers.xp_to_level import xp_to_level
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def get_level(self, user_id, skill):
+async def get_level(user_id, skill):
     sql = F"""SELECT
     {skill}_xp
     FROM user_skills
@@ -30,5 +31,5 @@ async def get_level(self, user_id, skill):
         if conn is not None:
             conn.close()
 
-    level = self.xpToLevel(row[0])
+    level = xp_to_level(row[0])
     return level

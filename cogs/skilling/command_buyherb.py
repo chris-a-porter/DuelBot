@@ -1,11 +1,15 @@
 import discord
-from helpers.math_helpers import numify, short_numify
 from cogs.item_files.emojis_list import potions, skills
-from cogs.economy.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
+from cogs.economy.store.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
+from helpers.math_helpers import numify, short_numify
+from cogs.economy.store.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
+from cogs.economy.bank.remove_item_from_user import remove_item_from_user
+from .get_level import get_level
+from .add_experience_to_stat import add_experience_to_stat
 import math
 
 
-async def buyherb(self, ctx, amount):
+async def buy_herb(ctx, amount):
 
     if amount == 'info':
         # Display info about prayer
@@ -67,15 +71,15 @@ async def buyherb(self, ctx, amount):
 
             if user_gp >= amount:
 
-                await Economy(self.bot).removeItemFromUser(ctx.author.id, 'duel_users', 'gp', amount)
+                await remove_item_from_user(ctx.author.id, 'duel_users', 'gp', amount)
 
-                startLevel = await self.getLevel(ctx.author.id, 'herblore')
-                await self.addExperienceToStat(ctx.author.id, 'herblore', herb_xp)
-                endLevel = await self.getLevel(ctx.author.id, 'herblore')
+                start_level = await get_level(ctx.author.id, 'herblore')
+                await add_experience_to_stat(ctx.author.id, 'herblore', herb_xp)
+                end_level = await get_level(ctx.author.id, 'herblore')
 
-                levelUpMessage = ""
-                if endLevel > startLevel:
-                    levelUpMessage = f"Your herblore level is now {endLevel}."
+                level_up_message = ""
+                if end_level > start_level:
+                    level_up_message = f"Your herblore level is now {end_level}."
 
                 await ctx.send(
-                    f"{ItemEmojis.Skills.herblore} You have purchased {short_herb_xp} herblore experience for {short_amount} GP. {levelUpMessage}")
+                    f"{skills['herblore']} You have purchased {short_herb_xp} herblore experience for {short_amount} GP. {level_up_message}")

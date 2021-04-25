@@ -1,7 +1,13 @@
 import math
+import globals
+from cogs.item_files.rares import rare_items
+from cogs.item_files.lootable_pk_items import pk_items
+from cogs.economy.store.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
+from cogs.economy.bank.give_item_to_user import give_item_to_user
+from cogs.economy.bank.remove_item_from_user import remove_item_from_user
+from rs_api.get_item_value import get_item_value
 
-
-async def sell(self, ctx, *args):
+async def command_sell(ctx, *args):
     def get_key(val, item_dict):
         for key, value in item_dict.items():
             if val == value:
@@ -52,9 +58,6 @@ async def sell(self, ctx, *args):
             await ctx.send('Proper syntax is *.buy [quantity] [item name].*')
             return
 
-    # Create a table row for the user if it does not exist already
-    await self.createPlayerItemTable(ctx.author.id)
-
     # Get the string of the items, formatted without spaces
     # i.e. redpartyhat
 
@@ -64,16 +67,16 @@ async def sell(self, ctx, *args):
     item_quantity = await convert_args_to_quantity(args[0])
 
     # Find item in one of the dictionaries
-    if item_name in self.rareIDs.keys():
+    if item_name in rare_items.keys():
         # If the item is a rare
-        item_id = self.rareIDs[item_name][0]
-        item_price = self.rareIDs[item_name][1]
-        item_string = self.rareIDs[item_name][2]
+        item_id = rare_items[item_name][0]
+        item_price = rare_items[item_name][1]
+        item_string = rare_items[item_name][2]
         table = "duel_rares"
-    elif item_name in self.itemList.values():
+    elif item_name in pk_items.values():
         # if the item is a regular item
-        item_id = get_key(item_name, self.itemList)
-        item_price = await self.getItemValue(item_id)
+        item_id = get_key(item_name, pk_items)
+        item_price = await get_item_value(item_id)
         item_string = get_full_item_name(item_id)
         table = "pking_items"
     else:
@@ -84,7 +87,7 @@ async def sell(self, ctx, *args):
         await ctx.send("There was an error fetching the item price. Please try again.")
         return
 
-    player_quantity = await self.getNumberOfItem(ctx.author.id, table, f"_{item_id}")
+    player_quantity = await get_number_of_item_owned_by_player(ctx.author.id, table, f"_{item_id}")
 
     if item_quantity > player_quantity:
         await ctx.send(f"You do not have {item_quantity}x {item_string} to sell.")
@@ -93,7 +96,7 @@ async def sell(self, ctx, *args):
     total_sale_price = math.floor(item_price * item_quantity * 0.8)
     comma_money = "{:,d}".format(total_sale_price)
 
-    await self.removeItemFromUser(ctx.author.id, table, f"_{item_id}", item_quantity)
-    await self.giveItemToUser(ctx.author.id, "duel_users", "gp", total_sale_price)
+    await remove_item_from_user(ctx.author.id, table, f"_{item_id}", item_quantity)
+    await give_item_to_user(ctx.author.id, "duel_users", "gp", total_sale_price)
     await ctx.send(f"You have sold {item_quantity}x {item_string} for {comma_money} GP.")
     return

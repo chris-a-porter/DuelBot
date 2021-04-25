@@ -2,7 +2,7 @@ import psycopg2
 import os
 from random import randint
 import math
-from cogs.skilling.skilling import get_level
+from cogs.skilling.__init__ import get_level
 
 
 DATABASE_URL = os.environ['DATABASE_URL']

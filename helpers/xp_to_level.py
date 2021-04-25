@@ -1,7 +1,7 @@
+import math
 from helpers.experience_table import experience_table
 
-
-def xp_to_level(self, experience):
+def xp_to_level(experience):
     l = 0
     r = 99
     mid = None

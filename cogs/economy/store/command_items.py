@@ -1,11 +1,12 @@
 import psycopg2
 import os
 import discord
-from
+from cogs.item_files.emojis_list import rares, chambers_of_xeric_items, saradomin_items, zamorak_items, armadyl_items, bandos_items, slayer_items, dragon_items, zulrah_items
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-def command_items(self, ctx):
+
+async def command_items(ctx):
     sql = f"""
                     SELECT 
                     _13652 dragon_claws,
@@ -31,15 +32,15 @@ def command_items(self, ctx):
         # Get the user's GP in their coffers and set the val
         for row in rows:
             embed = discord.Embed(title=f"{ctx.author.nick}'s items", color=discord.Color.blurple())
-            embed.add_field(name=f"**Dragon claws** {ItemEmojis.RaidsItems.dragonClaws}", value=row[0])
-            embed.add_field(name=f"**Armadyl godsword** {ItemEmojis.Armadyl.armadylGodsword}", value=row[1])
-            embed.add_field(name=f"**Bandos godsword** {ItemEmojis.Bandos.bandosGodsword}", value=row[2])
-            embed.add_field(name=f"**Saradomin godsword** {ItemEmojis.Saradomin.saradominGodsword}", value=row[3])
-            embed.add_field(name=f"**Zamorak godsword** {ItemEmojis.Zamorak.zamorakGodsword}", value=row[4])
-            embed.add_field(name=f"**Saradomin sword** {ItemEmojis.Saradomin.saradominSword}", value=row[5])
-            embed.add_field(name=f"**Granite maul** {ItemEmojis.SlayerItems.graniteMaul}", value=row[6])
-            embed.add_field(name=f"**Dragon warhammer** {ItemEmojis.DragonItems.dragonWarhammer}", value=row[7])
-            embed.add_field(name=f"**Toxic blowpipe** {ItemEmojis.ZulrahItems.toxicBlowpipe}", value=row[7])
+            embed.add_field(name=f"**Dragon claws** {chambers_of_xeric_items['dragon_claws']}", value=row[0])
+            embed.add_field(name=f"**Armadyl godsword** {armadyl_items['armadyl_godsword']}", value=row[1])
+            embed.add_field(name=f"**Bandos godsword** {bandos_items['bandos_godsword']}", value=row[2])
+            embed.add_field(name=f"**Saradomin godsword** {saradomin_items['saradomin_godsword']}", value=row[3])
+            embed.add_field(name=f"**Zamorak godsword** {zamorak_items['zamorak_godsword']}", value=row[4])
+            embed.add_field(name=f"**Saradomin sword** {saradomin_items['saradomin_sword']}", value=row[5])
+            embed.add_field(name=f"**Granite maul** {slayer_items['granite_maul']}", value=row[6])
+            embed.add_field(name=f"**Dragon warhammer** {dragon_items['dragon_warhammer']}", value=row[7])
+            embed.add_field(name=f"**Toxic blowpipe** {zulrah_items['toxic_blowpipe']}", value=row[7])
 
             await ctx.send(embed=embed)
 

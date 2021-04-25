@@ -1,17 +1,14 @@
 import psycopg2
 import os
-from .get_level import get_level
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-# Returns the level after adding experience to it
 
-
-async def add_experience_to_stat(user_id, skill, gained_xp):
+async def remove_item_from_user(user, table, column_name, quantity):
     sql = f"""
-    UPDATE user_skills
-    SET {skill}_xp = {skill}_xp + {gained_xp}
-    WHERE user_id = {user_id}
+    UPDATE {table}
+    SET {column_name} = {column_name} - {quantity} 
+    WHERE user_id = {user}
     """
 
     try:
@@ -21,10 +18,9 @@ async def add_experience_to_stat(user_id, skill, gained_xp):
         cur.close()
         conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
-        print("SOME ERROR 36", error)
+        print("SOME ERROR REMOVING ITEM", error)
+        return False
     finally:
         if conn is not None:
             conn.close()
-
-    after_level = await get_level(user_id, skill)
-    return after_level
+        return True

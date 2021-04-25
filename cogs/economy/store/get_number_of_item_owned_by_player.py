@@ -6,7 +6,7 @@ DATABASE_URL = os.environ['DATABASE_URL']
 # Returns the number of an item that belong to an user
 
 
-async def get_number_of_item_owned_by_player(self, user_id, table, column_name):
+async def get_number_of_item_owned_by_player(user_id, table, column_name):
 
     sql = f"""
     SELECT

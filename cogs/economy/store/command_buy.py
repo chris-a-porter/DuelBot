@@ -1,7 +1,13 @@
 from rs_api.get_item_name import get_item_name
+from cogs.item_files.rares import rare_items
+from cogs.item_files.lootable_pk_items import pk_items
+from cogs.economy.store.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
+from rs_api.get_item_value import get_item_value
+from cogs.economy.store.give_item_to_user import give_item_to_user
+from cogs.economy.bank.remove_item_from_user import remove_item_from_user
+from cogs.economy.bank.give_item_to_user import give_item_to_user
 
-
-async def buy(self, ctx, *args):
+async def command_buy(ctx, *args):
     def get_key(val, item_dict):
         for key, value in item_dict.items():
             if val == value:
@@ -48,9 +54,6 @@ async def buy(self, ctx, *args):
             await ctx.send('Proper syntax is *.buy [quantity] [item name].*')
             return
 
-    # Create a table row for the user if it does not exist already
-    await self.createPlayerItemTable(ctx.author.id)
-
     # Get the string of the items, formatted without spaces
     # i.e. redpartyhat
     item_name = await convert_args_to_item_string(args)
@@ -59,21 +62,21 @@ async def buy(self, ctx, *args):
     item_quantity = await convert_args_to_quantity(args[0])
 
     # Get user's cash stack
-    user_gp = await self.getNumberOfItem(ctx.author.id, "duel_users", "gp")
+    user_gp = await get_number_of_item_owned_by_player(ctx.author.id, "duel_users", "gp")
 
     table = None
 
     # Find item in one of the dictionaries
-    if item_name in self.rareIDs.keys():
+    if item_name in rare_items.keys():
         # If the item is a rare
-        item_id = self.rareIDs[item_name][0]
-        item_price = self.rareIDs[item_name][1]
-        item_string = self.rareIDs[item_name][2]
+        item_id = rare_items[item_name][0]
+        item_price = rare_items[item_name][1]
+        item_string = rare_items[item_name][2]
         table = "duel_rares"
-    elif item_name in self.itemList.values():
+    elif item_name in pk_items.values():
         # if the item is a regular item
-        item_id = get_key(item_name, self.itemList)
-        item_price = await self.getItemValue(item_id)
+        item_id = get_key(item_name, pk_items)
+        item_price = await get_item_value(item_id)
 
         item_string = get_item_name(item_id)
         table = "pking_items"
@@ -90,8 +93,8 @@ async def buy(self, ctx, *args):
 
     if user_gp >= total_purchase_price:
 
-        await self.removeItemFromUser(ctx.author.id, "duel_users", "gp", total_purchase_price)
-        await self.giveItemToUser(ctx.author.id, table, f"_{item_id}", item_quantity)
+        await remove_item_from_user(ctx.author.id, "duel_users", "gp", total_purchase_price)
+        await give_item_to_user(ctx.author.id, table, f"_{item_id}", item_quantity)
         await ctx.send(f"You have bought {item_quantity}x {item_string} for {comma_money} GP.")
         return
 

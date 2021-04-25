@@ -1,5 +1,8 @@
 import random
 import uuid
+from cogs.dueling.classes import Duel, DuelUser
+from cogs.dueling.duel_check import check
+import globals
 
 async def create_duel(message):
 
@@ -9,7 +12,7 @@ async def create_duel(message):
     channel_duel = globals.duels.get(message.channel.id, None)
 
     if channel_duel == None:
-        duels[message.channel.id] = Duel(DuelUser(message.author), uuid.uuid4())
+        globals.duels[message.channel.id] = Duel(DuelUser(message.author), uuid.uuid4())
         channel_duel = globals.duels.get(message.channel.id, None)
         globals.lastMessages[message.channel.id] = await message.send(f"{message.author.nick} has started a duel. Type **.fight** to duel them.")
         return

@@ -3,7 +3,8 @@ import os
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
-async def check_user_gp(self, user_id):
+
+async def check_user_gp(user_id):
     sql = f"""
     SELECT
      gp gp

@@ -4,8 +4,6 @@ from cogs.economy.store.give_item_to_user import give_item_to_user
 
 async def give_gp(ctx, *args):
 
-    print("ARGUMENTS HERE", ctx, *args)
-
     quantity = numify(args[1])
 
     short_quant = short_numify(quantity, 1)

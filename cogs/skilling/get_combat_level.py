@@ -1,11 +1,11 @@
 import os
 import math
-from cogs.skilling.skilling import get_level
+from cogs.skilling.get_level import get_level
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def getCombatLevel(self, user_id):
+async def getCombatLevel(user_id):
     # Get user's stats from SQL
     attack = await get_level(user_id, 'attack')
     strength = await get_level(user_id, 'strength')

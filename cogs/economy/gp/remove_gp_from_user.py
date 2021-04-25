@@ -1,12 +1,13 @@
 import psycopg2
 import os
+from cogs.economy.gp.check_user_gp import check_user_gp
 
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def remove_gp_from_user(self, message, user_id, amount):
+async def remove_gp_from_user(message, user_id, amount):
 
-    if amount <= await self.checkUserGP(user_id):
+    if amount <= await check_user_gp(user_id):
         sql = f"""
         UPDATE duel_users 
         SET gp = gp - {amount} 
