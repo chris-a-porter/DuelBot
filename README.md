@@ -65,16 +65,16 @@ COMING SOON
   - [ ] .fight [item/gp]/stake
 - [X] .gp
 - [ ] .pay
-- [ ] .buy
-- [ ] .sell
+- [X] .buy
+- [X] .sell
 - [ ] .items
 - [ ] .rares
 - [X] .invite
 - [X] .server
 - [X] .hs/highscores
 - [X] .refer
-- [ ] .buybones
-- [ ] .buyherb
+- [?] .buybones
+- [?] .buyherb
 - [ ] .slay
 - [ ] .mystats
 - [ ] .switch
