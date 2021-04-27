@@ -62,7 +62,7 @@ async def generate_loot_image(ctx, loot):
 
     for num, key in enumerate(loot.keys(), start=0):
 
-        abyssal_whip_image = scale_image(Image.open('assets/Abyssal whip.png').convert("RGBA"), 10)
+        abyssal_whip_image = scale_image(Image.open(f'assets/items-icons/{key}.png').convert("RGBA"), 10)
 
         abyssal_whip_image = scale_image_to_dimension(abyssal_whip_image, 280)
 
