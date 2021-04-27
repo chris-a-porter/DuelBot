@@ -1,38 +1,60 @@
-# Roll for a chance to receive a rare/holiday item
-# If the rares table is hit, the user will receive a message
-import psycopg2
-import os
-from cogs.item_files.emojis_list import rares
+import random
 from random import randint
+from cogs.item_files.emojis_list import rares
+from cogs.item_files.drop_tables import common_table, uncommon_table, rare_table, super_rare_table
 
-DATABASE_URL = os.environ['DATABASE_URL']
+
+# Generate one loot item
+# @input table class: PlayerKillingLootTable
+def pick_loot_item(table):
+    loot = random.choice(table.get())
+    return loot
 
 
-async def roll_for_rares(message, winner):
+# Generate a loot item based on RNG (a few items)
+def generate_random_loot_item():
 
+    selected_item = None
+
+    rng = randint(0, 599)
+
+    if rng <= 5:
+        selected_item = pick_loot_item(super_rare_table)
+    elif rng <= 35:
+        selected_item = pick_loot_item(rare_table)
+    elif rng <= 135:
+        selected_item = pick_loot_item(uncommon_table)
+    elif rng <= 599:
+        selected_item = pick_loot_item(common_table)
+
+    return selected_item
+
+
+# Generate a holiday drop
+def generate_random_holiday_item():
+    table_roll = randint(0, 74)
     item = None
     item_text = None
     item_emoji = None
 
-    table_roll = randint(0, 74)
 
     # Winner hits the rares table
     # Effective rates are as follows:
-        # Christmas cracker - 0.01% or 1/10,000
-        # Partyhat table - 0.18% or 18/10,000
-            # Red partyhat - 0.03% or 3/10,000
-            # Blue partyhat - 0.03% or 3/10,000
-            # Yellow partyhat - 0.03% or 3/10,000
-            # Green partyhat - 0.03% or 3/10,000
-            # Purple partyhat - 0.03% or 3/10,000
-            # White partyhat - 0.03% or 3/10,000
-        # Halloween mask table - 0.21% or 21/10,000
-            # Red halloween mask - 0.07% or 7/10,000
-            # Blue halloween mask - 0.07% or 7/10,000
-            # Green halloween mask - 0.07% or 7/10,000
-        # Santa hat - 0.10% or 10/10,000
-        # Pumpkin - 0.25% or 25/10,000
-        # Easter egg - 0.25% or 25/10,000
+    # Christmas cracker - 0.01% or 1/10,000
+    # Partyhat table - 0.18% or 18/10,000
+    # Red partyhat - 0.03% or 3/10,000
+    # Blue partyhat - 0.03% or 3/10,000
+    # Yellow partyhat - 0.03% or 3/10,000
+    # Green partyhat - 0.03% or 3/10,000
+    # Purple partyhat - 0.03% or 3/10,000
+    # White partyhat - 0.03% or 3/10,000
+    # Halloween mask table - 0.21% or 21/10,000
+    # Red halloween mask - 0.07% or 7/10,000
+    # Blue halloween mask - 0.07% or 7/10,000
+    # Green halloween mask - 0.07% or 7/10,000
+    # Santa hat - 0.10% or 10/10,000
+    # Pumpkin - 0.25% or 25/10,000
+    # Easter egg - 0.25% or 25/10,000
 
     if table_roll == 0:
         rares_roll = randint(0, 99)
@@ -93,52 +115,30 @@ async def roll_for_rares(message, winner):
             item_text = "an Easter egg"
             item_emoji = rares['easter_egg']
 
-    sql = None
 
-    if table_roll == 0:
-        print(f"{message.author.id} hit the rares table")
-        sql = f"""
-        INSERT INTO duel_rares (
-        user_id,
-        red_partyhat,
-        blue_partyhat,
-        yellow_partyhat,
-        green_partyhat,
-        purple_partyhat,
-        white_partyhat,
-        christmas_cracker,
-        red_hween_mask,
-        blue_hween_mask,
-        green_hween_mask,
-        santa_hat,
-        pumpkin,
-        easter_egg)
-        VALUES
-        ({winner.id}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        ON CONFLICT (user_id) DO UPDATE
-        SET {item} = duel_rares.{item} + 1
-        """
-    else:
-        print(f"{message.author.id} did not hit the rares table ({table_roll}/75)")
-        return
+# Generate a whole loot pile
+def generate_loot_pile(min_rolls, max_rolls):
 
-    conn = None
+    # Dictate the amount of loot rolls the player will receive
+    num_rolls = randint(min_rolls, max_rolls)
 
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        cur = conn.cursor()
-        cur.execute(sql)
-        cur.close()
-        conn.commit()
-    except (Exception, psycopg2.DatabaseError) as error:
-        print("SOME ERROR 2", error)
-        return
-    finally:
-        if conn is not None:
-            conn.close()
+    # Track all of the loot gained
+    loot = {}
 
-    # Send the message with info about hitting the rares table to the winner
-    await message.send(f"**{message.author.id} received {item_text} {item_emoji} for winning!**")
+    # For each roll, append the loot pile
+    for _ in range(num_rolls):
 
-    notif_channel = self.bot.get_channel(689313376286802026)
-    await notif_channel.send(f"{message.author.id} has received {item_text} {item_emoji} for winning a duel!")
+        loot_item = generate_random_loot_item()
+        loot_item_quantity = randint(loot_item['min'], loot_item['max'])
+
+        if loot_item["id"] in loot:
+            loot[loot_item["id"]] = loot[loot_item["id"]] + loot_item_quantity
+        else:
+            loot[loot_item["id"]] = loot_item_quantity
+
+    holiday_roll = randint(0, 249)
+
+    if holiday_roll == 0:
+        loot.append(generate_random_holiday_item())
+
+    return loot

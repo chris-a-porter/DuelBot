@@ -7,7 +7,7 @@ from cogs.item_files.emojis_list import misc_items
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def generate_pk_loot(self, message):
+async def generate_pk_loot(message):
     lastmsg = await message.send('*Checking the loot pile...*')
     loot = await roll_random_loot(message, 3, 6, 0)
 

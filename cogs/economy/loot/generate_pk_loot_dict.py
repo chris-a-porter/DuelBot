@@ -4,7 +4,7 @@ import random
 # Formerly rollLoot
 
 
-async def generate_pk_loot_dict(self, ctx, min_rolls, max_rolls, modifier):
+async def generate_pk_loot_dict(ctx, min_rolls, max_rolls, modifier):
     async def pickTable():
         # Pick a random number and assign it to the table
         rng = randint(0, 599)

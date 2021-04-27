@@ -1,7 +1,25 @@
+from .emojis_list import (
+    medium_clue_items,
+    hard_clue_items,
+    elite_clue_items,
+    infinity_armor,
+    armadyl_items,
+    zamorak_items,
+    saradomin_items,
+    bandos_items,
+    chambers_of_xeric_items,
+    cerberus_items,
+    jewelry,
+    raw_materials,
+    potions,
+    food,
+
+)
+
 superRareItems = {
-    2577: ["Ranger boots", 1, 1, ItemEmojis.MediumClues.rangerBoots],
-    2581: ["Robin hood hat", 1, 1, ItemEmojis.HardClues.robinHoodHat],
-    19994: ["Ranger gloves", 1, 1, ItemEmojis.EliteClues.rangerGloves],
+    2577: ["Ranger boots", 1, 1, medium_clue_items['ranger_boots']],
+    2581: ["Robin hood hat", 1, 1, hard_clue_items['robin_hood_hat']],
+    19994: ["Ranger gloves", 1, 1, elite_clue_items['ranger_gloves']],
     23249: ["Rangers' tights ", 1, 1, ItemEmojis.EliteClues.rangersTights],
     12596: ["Ranger's tunic", 1, 1, ItemEmojis.EliteClues.rangersTunic],
     6916: ["Infinity top", 1, 1, ItemEmojis.Infinity.infinityTop],

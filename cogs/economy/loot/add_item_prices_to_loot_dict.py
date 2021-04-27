@@ -4,7 +4,7 @@ import requests
 # Adds live prices to item dict
 
 
-async def add_item_prices_to_loot_dict(self, ctx, min_rolls, max_rolls, modifier):
+async def add_item_prices_to_loot_dict(ctx, min_rolls, max_rolls, modifier):
     loot_dict = await self.rollForLoot(ctx, min_rolls, max_rolls, modifier)
 
     for itemKey in loot_dict.keys():
