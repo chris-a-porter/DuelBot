@@ -7,6 +7,8 @@ from ..admin.commands_randomloot import roll_pking_table_loot
 from ..economy.bank.give_item_to_user import give_item_to_user
 from .update_db_with_duel_results import update_db_with_duel_results
 from .turn_checker import turnChecker
+import globals
+
 
 # freezeAttack() causes the attacking user to use an attack that has potential to use the enemy
 # Inputs:
@@ -24,11 +26,13 @@ async def freezeAttack(ctx, weapon, special, rolls, max, freezeChance):
     # Retrieve the channel's duel from the global duel dict
     channelDuel = globals.duels.get(ctx.channel.id, None)
 
+    print(channelDuel, "GLOBAL DUELS")
+
     if ctx.channel.id != channelDuel.channel:
         return
 
     # If the duel doesn't exist, just return
-    if channelDuel == None:
+    if channelDuel is None:
         return
 
     # Sets the attacker and defender (sending_user and receiving_user, respectively)
@@ -119,7 +123,7 @@ async def freezeAttack(ctx, weapon, special, rolls, max, freezeChance):
 
     # If the weapon only hit once (no freeze attacks currently hit more than once)
     if len(hitArray) == 1:
-        sending += f'{ctx.author.id} uses **{weapon}** and hits a **{hitArray[0]}** on {receiving_user.user.id}.'
+        sending += f'{ctx.author.name} uses **{weapon}** and hits a **{hitArray[0]}** on {receiving_user.user.name}.'
 
     # winning message
     if leftoverHitpoints <= 0:
@@ -136,23 +140,23 @@ async def freezeAttack(ctx, weapon, special, rolls, max, freezeChance):
             numberToWin = channelDuel.stakeQuantity * 2
             table = channelDuel.table
             if channelDuel.stakeItem == 'gp':
-                await ctx.send(f"**{ctx.author.id}** has won {channelDuel.shortQuantity} GP.")
+                await ctx.send(f"**{ctx.author.name}** has won {channelDuel.shortQuantity} GP.")
             else:
-                await ctx.send(f"**{ctx.author.id}** has won {numberToWin} {channelDuel.itemLongName}.")
+                await ctx.send(f"**{ctx.author.name}** has won {numberToWin} {channelDuel.itemLongName}.")
             await give_item_to_user(ctx.author.id, table, itemToWin, numberToWin)
         return
 
     # Calculates special energy remaining and adds to message
     if special != 0:
-        sending += f' {ctx.author.id} has {sending_user.special}% special attack energy left.'
+        sending += f' {ctx.author.name} has {sending_user.special}% special attack energy left.'
 
     # If the user got hit by poison and they're poisoned (both will be true if the user was poisoned this turn) append the message to send
     if poisonRoll == 0 and receiving_user.poisoned == True:
-        sending += f' {receiving_user.user.id} is hit for **6** poison damage.'
+        sending += f' {receiving_user.user.name} is hit for **6** poison damage.'
 
     # If the user is frozen, send the message and return early to avoid switching who the turnChecker is looking for
     if rand == 0:
-        sending += f' {receiving_user.user.id} is **frozen** and loses their turn.'
+        sending += f' {receiving_user.user.name} is **frozen** and loses their turn.'
         channelDuel.turnCount += 1
         await ctx.send(sending)
         await ctx.send(file=discord.File('./hpbar.png'))

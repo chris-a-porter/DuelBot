@@ -1,7 +1,8 @@
 # Checker function to see if a turn is taken in a set amount of time
+import globals
+import asyncio
 
-
-async def turnChecker(self, message, duel):
+async def turnChecker(message, duel):
 
     # Retrieve the duel for the channel
     channelDuel = globals.duels.get(message.channel.id, None)
@@ -78,7 +79,7 @@ async def turnChecker(self, message, duel):
 
     try:
         # Wait for the person who's turn it is to send a messsage that matches the parameters in checkParameters(), executes after 90 seconds
-        msg = await self.bot.wait_for('message', check=checkParameters, timeout=90)
+        msg = await globals.bot.wait_for('message', check=checkParameters, timeout=90)
 
     except asyncio.TimeoutError:
         # Called when it times out

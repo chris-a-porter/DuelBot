@@ -1,3 +1,13 @@
+from helpers.math_helpers import numify, short_numify
+from ..economy.store.get_number_of_item_owned_by_player import get_number_of_item_owned_by_player
+from ..economy.bank.remove_item_from_user import remove_item_from_user
+import uuid
+from rs_api.get_item_name import get_item_name
+import random
+from ..item_files.rares import rare_items
+from ..item_files.lootable_pk_items import pk_items
+import globals
+
 async def createDuel(self, message, *args):
     async def convertArgsToItemString(args):
 
@@ -10,7 +20,7 @@ async def createDuel(self, message, *args):
             except:
                 # Test if the argument is a string
                 try:
-                    placeholderQuantity = int(RSMathHelpers.numify(self, args[0]))
+                    placeholderQuantity = int(numify(args[0]))
                     if type(placeholderQuantity) == int:
                         itemQuantity = placeholderQuantity
                 except:
@@ -53,7 +63,7 @@ async def createDuel(self, message, *args):
         # If there is only one argument
         if len(arguments) == 1:
             # Try to convert the argument into a number, because the stake should be GP
-            value = RSMathHelpers.numify(self, arguments[0])
+            value = numify(arguments[0])
             try:
                 # If the number did not successfully convert to a number, this will throw an exception when int(value) is called
                 # If it is successful, it will return "gp" to indicate a monetary stake
@@ -73,15 +83,15 @@ async def createDuel(self, message, *args):
                     return
 
                 # Check to see if the name of the item is in either of the item dictionaries
-                if stakeVals[0] in Economy(self.bot).rareIDs.keys():
+                if stakeVals[0] in rare_items.keys():
                     stakeType = "rares"
-                    itemLongName = Economy(self.bot).rareIDs[stakeVals[0]][2]
-                    itemId = Economy(self.bot).rareIDs[stakeVals[0]][0]
+                    itemLongName = rare_items[stakeVals[0]][2]
+                    itemId = rare_items[stakeVals[0]][0]
                     return [stakeType, itemLongName, itemId]
-                elif stakeVals[0] in Economy(self.bot).itemList.values():
+                elif stakeVals[0] in pk_items.values():
                     stakeType = "items"
-                    itemId = get_key(stakeVals[0], Economy(self.bot).itemList)
-                    itemLongName = Economy(self.bot).getItemName(itemId)
+                    itemId = get_key(stakeVals[0], pk_items)
+                    itemLongName = get_item_name(itemId)
                     return [stakeType, itemLongName, itemId]
                 else:
                     await message.send("Couldn't find that item, please try again.")
@@ -147,7 +157,7 @@ async def createDuel(self, message, *args):
             _table = 'pking_items'
             _itemId = f"_{stakeType[2]}"
 
-        _userQuantity = await Economy(self.bot).getNumberOfItem(user.id, _table, f"{_itemId}")
+        _userQuantity = await get_number_of_item_owned_by_player(user.id, _table, f"{_itemId}")
 
         if _userQuantity < _itemQuantity:
             if _itemType == 'gp':
@@ -156,7 +166,7 @@ async def createDuel(self, message, *args):
                 else:
                     await message.send(f"{user.id} does not {_shortItemName} to stake.")
             else:
-                shortQuantity = RSMathHelpers(self.bot).shortNumify(_itemQuantity, 1)
+                shortQuantity = short_numify(_itemQuantity, 1)
 
                 if message.author.id == user.id:
                     await message.send(f"You don't have {shortQuantity} {_fullItemName} to stake.")
@@ -222,7 +232,7 @@ async def createDuel(self, message, *args):
                                                              message.channel.id, None, None, None, None, None)
             channelDuel = globals.duels.get(message.channel.id, None)
             globals.lastMessages[message.channel.id] = await message.send(
-                f"{message.author.id} has started a duel. Type **=fight** to duel them.")
+                f"<@{message.author.id}> has started a duel. Type **=fight** to duel them.")
             await self.startCancelCountdown(message, channelDuel.uuid)
             return
         elif args != None:
@@ -236,14 +246,14 @@ async def createDuel(self, message, *args):
             globals.duels[message.channel.id] = globals.Duel(globals.DuelUser(message.author), uuid.uuid4(),
                                                              message.channel.id, table[0], stakeParams[1], table[1],
                                                              stakeType[1],
-                                                             RSMathHelpers(self.bot).shortNumify(stakeParams[1], 1))
+                                                             short_numify(stakeParams[1], 1))
             channelDuel = globals.duels.get(message.channel.id, None)
             if stakeType[0] == 'gp':
                 globals.lastMessages[message.channel.id] = await message.send(
-                    f"**{message.author.id}** has started a duel for **{args[0][0]} GP**. Type **=fight {args[0][0]}** to duel them.")
+                    f"**<@{message.author.id}>** has started a duel for **{args[0][0]} GP**. Type **=fight {args[0][0]}** to duel them.")
             else:
                 globals.lastMessages[message.channel.id] = await message.send(
-                    f"**{message.author.id}** has started a duel for **{args[0][0]} {stakeType[1]}**. Type **=fight {RSMathHelpers(self.bot).shortNumify(stakeParams[1], 1)} {stakeType[1]}** to duel them.")
+                    f"**{message.author.id}** has started a duel for **{args[0][0]} {stakeType[1]}**. Type **=fight {short_numify(stakeParams[1], 1)} {stakeType[1]}** to duel them.")
 
             await self.startCancelCountdown(message, channelDuel.uuid)
             return
@@ -283,7 +293,7 @@ async def createDuel(self, message, *args):
             player1HasQuantityStill = await checkUsersItemQuantity(channelDuel.user_1.user)
             if player1HasQuantityStill == False:
                 await message.send(
-                    f"Cancelling the duel because {channelDuel.user_1.user.id} no longer has {RSMathHelpers(self.bot).shortNumify(stakeParams[1], 1)} {stakeType[1]}.")
+                    f"Cancelling the duel because {channelDuel.user_1.user.id} no longer has {short_numify(stakeParams[1], 1)} {stakeType[1]}.")
                 del globals.duels[message.channel.id]
                 return
         elif stakeType[1].replace(' ', '').lower() != channelDuel.itemLongName.replace(' ', '').lower():
@@ -293,9 +303,9 @@ async def createDuel(self, message, *args):
         # If it passed the other checks, add duel user 2 to the fight
         channelDuel.user_2 = globals.DuelUser(message.author)
 
-        await Economy(self.bot).removeItemFromUser(channelDuel.user_1.user.id, channelDuel.table, channelDuel.stakeItem,
+        await remove_item_from_user(channelDuel.user_1.user.id, channelDuel.table, channelDuel.stakeItem,
                                                    channelDuel.stakeQuantity)
-        await Economy(self.bot).removeItemFromUser(channelDuel.user_2.user.id, channelDuel.table, channelDuel.stakeItem,
+        await remove_item_from_user(channelDuel.user_2.user.id, channelDuel.table, channelDuel.stakeItem,
                                                    channelDuel.stakeQuantity)
     elif channelDuel.stakeItem == None:
         channelDuel.user_2 = globals.DuelUser(message.author)

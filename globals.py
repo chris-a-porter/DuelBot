@@ -1,6 +1,10 @@
 from osrsbox import items_api, monsters_api
 
-def init():
+def init(bot_client):
+
+    global bot
+    bot = bot_client
+
     global duels
     duels = {}
 

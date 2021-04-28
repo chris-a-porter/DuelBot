@@ -12,7 +12,7 @@ async def create_duel(message):
     channel_duel = globals.duels.get(message.channel.id, None)
 
     if channel_duel == None:
-        globals.duels[message.channel.id] = Duel(DuelUser(message.author), uuid.uuid4())
+        globals.duels[message.channel.id] = Duel(DuelUser(message.author), uuid.uuid4(), message.channel.id)
         channel_duel = globals.duels.get(message.channel.id, None)
         globals.lastMessages[message.channel.id] = await message.send(f"{message.author.nick} has started a duel. Type **.fight** to duel them.")
         return
@@ -39,4 +39,4 @@ async def create_duel(message):
         channel_duel.turn = channel_duel.user_2
 
     del globals.lastMessages[message.channel.id]
-    await message.send(f"Beginning duel between {channel_duel.user_1.user.nick} and {channel_duel.user_2.user.nick} \n**{starting_user.user.nick}** goes first.")
+    await message.send(f"Beginning duel between {channel_duel.user_1.user.name} and {channel_duel.user_2.user.name} \n**{starting_user.user.name}** goes first.")

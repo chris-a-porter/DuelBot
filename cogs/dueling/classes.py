@@ -1,5 +1,5 @@
 class DuelUser:
-    hitpoints = 99
+    hitpoints = 10
     special = 100
     poisoned = False
     lastAttack = None
@@ -9,7 +9,7 @@ class DuelUser:
         self.user = user
 
         if user.nick == None:
-            user.nick = user.id
+            user.nick = user.name
 
 
 class Duel:
@@ -18,7 +18,9 @@ class Duel:
     turn = None
     turnCount = 0
     uuid = None
+    stakeItem = None
 
-    def __init__(self, user, uuid):
+    def __init__(self, user, uuid, channel):
         self.user_1 = user
-        self.uuid = uuid
+        self.uuid = uuid,
+        self.channel = channel

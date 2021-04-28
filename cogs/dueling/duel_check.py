@@ -1,3 +1,5 @@
+import globals
+
 def check(user, channel_id):
 
     channel_duel = globals.duels.get(channel_id, None)

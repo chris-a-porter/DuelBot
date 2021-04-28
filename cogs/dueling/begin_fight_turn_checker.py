@@ -1,4 +1,7 @@
-async def beginFightTurnChecker(self, message, duel):
+import globals
+import asyncio
+
+async def beginFightTurnChecker(message, duel):
     channelDuel = globals.duels.get(message.channel.id, None)
 
     # switches who's turn it is

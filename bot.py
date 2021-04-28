@@ -2,10 +2,12 @@ import discord
 from discord.ext import commands
 import os
 import globals
-globals.init()
 
 
 bot = commands.Bot(command_prefix = os.environ['PREFIX'])
+
+globals.init(bot)
+
 duels = {}
 lastMessages = {}
 DATABASE_URL = os.environ['DATABASE_URL']

@@ -10,7 +10,7 @@ from PIL import ImageFont
 # Poison - bool - is the user poisoned
 
 
-def make_hitpoints_image(self, hitpoints, freeze, poison):
+def make_hitpoints_image(hitpoints, freeze, poison):
 
     # Red background
     primary = (252, 3, 3)

@@ -1,5 +1,5 @@
 import asyncio
-
+import globals
 
 async def start_cancel_countdown(message, saved_uuid):
 

@@ -10,7 +10,7 @@ from ..economy.bank.give_item_to_user import give_item_to_user
 import os
 
 
-async def use_attack(message, weapon, special, rolls, max, healpercent, poison):
+async def use_attack(message, weapon, special, rolls, max, healpercent=0, poison=False):
     sendingUser = None
     receivingUser = None
 
@@ -107,27 +107,27 @@ async def use_attack(message, weapon, special, rolls, max, healpercent, poison):
 
     # 1 attack roll
     if len(hitArray) == 1:
-        sending += f'{message.author.id} uses their **{weapon}** and hits **{hitArray[0]}** on {receivingUser.user.id}.'
+        sending += f'{message.author.name} uses their **{weapon}** and hits **{hitArray[0]}** on {receivingUser.user.name}.'
 
     # 2 attack rolls
     if len(hitArray) == 2:
-        sending += f'{message.author.id} uses their **{weapon}** and hits **{hitArray[0]}-{hitArray[1]}** on {receivingUser.user.id}.'
+        sending += f'{message.author.name} uses their **{weapon}** and hits **{hitArray[0]}-{hitArray[1]}** on {receivingUser.user.name}.'
 
     # 3 attack rolls
     if len(hitArray) == 3:
-        sending += f'{message.author.id} uses their **{weapon}** and hits **{hitArray[0]}-{hitArray[1]}-{hitArray[2]}** on {receivingUser.user.id}.'
+        sending += f'{message.author.name} uses their **{weapon}** and hits **{hitArray[0]}-{hitArray[1]}-{hitArray[2]}** on {receivingUser.user.name}.'
 
     if poisonRoll == 0 and receivingUser.poisoned == True:
-        sending += f' {receivingUser.user.id} is hit for **6** poison damage.'
+        sending += f' {receivingUser.user.name} is hit for **6** poison damage.'
 
     # healing message
     if healpercent > 0:
-        sending = f'{message.author.id} uses their **{weapon}** and hits **{hitArray[0]}**, healing for **{healAmount}**. {sendingUser.user.id} now has **{sendingUser.hitpoints}** HP.'
+        sending = f'{message.author.name} uses their **{weapon}** and hits **{hitArray[0]}**, healing for **{healAmount}**. {sendingUser.user.name} now has **{sendingUser.hitpoints}** HP.'
 
     # winning message
     if leftoverHitpoints <= 0:
         await message.send(
-            content=f'{sending} \n**{message.author.id}** has won the duel with **{sendingUser.hitpoints}** HP left!',
+            content=f'{sending} \n**{message.author.name}** has won the duel with **{sendingUser.hitpoints}** HP left!',
             file=discord.File('./hpbar.png'))
         await update_db_with_duel_results(sendingUser.user, receivingUser.user)
         del globals.duels[message.channel.id]
