@@ -1,5 +1,5 @@
 class DuelUser:
-    hitpoints = 10
+    hitpoints = 99
     special = 100
     poisoned = False
     lastAttack = None
