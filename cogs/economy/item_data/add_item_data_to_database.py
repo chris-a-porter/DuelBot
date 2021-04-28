@@ -39,6 +39,8 @@ async def add_item_data_to_database(item_id):
     item_info = get_osrsbox_data(item_id)
     item_price = await get_item_value(item_id)
 
+    print("ITEM INFO", item_info)
+
     sql = f"""
         INSERT INTO item_references
         (
