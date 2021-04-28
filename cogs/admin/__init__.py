@@ -1,6 +1,6 @@
 from discord.ext import commands
 from cogs.admin.commands_givegp import give_gp
-from .commands_randomloot import randomloot
+from .commands_randomloot import roll_pking_table_loot
 import os
 
 
@@ -25,7 +25,7 @@ class AdminCommands(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def randomloot(self, ctx):
-        await randomloot(ctx)
+        await roll_pking_table_loot(ctx)
 
 
 

@@ -18,7 +18,7 @@ def get_osrsbox_data(item_id):
 
 
 # Recursive call through an attribute chain to get the ultimate value.
-def deepgetattr(obj, attr):
+def deep_get_attr(obj, attr):
 
     try:
         return reduce(getattr, attr.split('.'), obj)
@@ -120,23 +120,23 @@ async def add_item_data_to_database(item_id):
             item_info.highalch,
             item_info.weight,
             item_info.examine.replace("'", "\'"),
-            deepgetattr(item_info, 'equipment.attack_stab'),
-            deepgetattr(item_info, 'equipment.attack_slash'),
-            deepgetattr(item_info, 'equipment.attack_crush'),
-            deepgetattr(item_info, 'equipment.attack_magic'),
-            deepgetattr(item_info, 'equipment.attack_ranged'),
-            deepgetattr(item_info, 'equipment.defence stab'),
-            deepgetattr(item_info, 'equipment.defence_slash'),
-            deepgetattr(item_info, 'equipment.defence_crush'),
-            deepgetattr(item_info, 'equipment.defence_magic'),
-            deepgetattr(item_info, 'equipment.defence_ranged'),
-            deepgetattr(item_info, 'equipment.melee_strength'),
-            deepgetattr(item_info, 'equipment.ranged_strength'),
-            deepgetattr(item_info, 'equipment.magic_damage'),
-            deepgetattr(item_info, 'equipment.equipment.prayer'),
-            deepgetattr(item_info, 'equipment.slot'),
-            deepgetattr(item_info, 'weapon.attack_speed'),
-            deepgetattr(item_info, 'weapon.weapon_type')
+            deep_get_attr(item_info, 'equipment.attack_stab'),
+            deep_get_attr(item_info, 'equipment.attack_slash'),
+            deep_get_attr(item_info, 'equipment.attack_crush'),
+            deep_get_attr(item_info, 'equipment.attack_magic'),
+            deep_get_attr(item_info, 'equipment.attack_ranged'),
+            deep_get_attr(item_info, 'equipment.defence stab'),
+            deep_get_attr(item_info, 'equipment.defence_slash'),
+            deep_get_attr(item_info, 'equipment.defence_crush'),
+            deep_get_attr(item_info, 'equipment.defence_magic'),
+            deep_get_attr(item_info, 'equipment.defence_ranged'),
+            deep_get_attr(item_info, 'equipment.melee_strength'),
+            deep_get_attr(item_info, 'equipment.ranged_strength'),
+            deep_get_attr(item_info, 'equipment.magic_damage'),
+            deep_get_attr(item_info, 'equipment.equipment.prayer'),
+            deep_get_attr(item_info, 'equipment.slot'),
+            deep_get_attr(item_info, 'weapon.attack_speed'),
+            deep_get_attr(item_info, 'weapon.weapon_type')
         ))
         cur.close()
         conn.commit()

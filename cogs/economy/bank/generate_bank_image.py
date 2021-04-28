@@ -88,7 +88,7 @@ async def generate_bank_image(ctx):
 
     for num, item in enumerate(bank_items[0:48]):
 
-        item_image = scale_image(Image.open(f'assets/items-icons/{item[0]}.png').convert("RGBA"), 11)
+        item_image = scale_image(Image.open(f'assets/items-icons/{item[0]}.png').convert("RGBA"), 10)
         draw = ImageDraw.Draw(item_image)
 
         draw.text((10, 10), f"{item[1]}", (0, 0, 0), font=font)

@@ -1,4 +1,16 @@
-async def useAttack(self, message, weapon, special, rolls, max, healpercent, poison):
+import globals
+from random import randint
+import math
+from .make_hitpoints_image import make_hitpoints_image
+from .turn_checker import turnChecker
+from .update_db_with_duel_results import update_db_with_duel_results
+from ..admin.commands_randomloot import roll_pking_table_loot
+import discord
+from ..economy.bank.give_item_to_user import give_item_to_user
+import os
+
+
+async def use_attack(message, weapon, special, rolls, max, healpercent, poison):
     sendingUser = None
     receivingUser = None
 
@@ -85,11 +97,11 @@ async def useAttack(self, message, weapon, special, rolls, max, healpercent, poi
     # create the image for the remaining hitpoints
     if leftoverHitpoints > 0:
         if receivingUser.poisoned == True:
-            self.makeImage(leftoverHitpoints, False, True)
+            make_hitpoints_image(leftoverHitpoints, False, True)
         else:
-            self.makeImage(leftoverHitpoints, False, False)
+            make_hitpoints_image(leftoverHitpoints, False, False)
     else:
-        self.makeImage(0, False, False)
+        make_hitpoints_image(0, False, False)
 
     sending = ""
 
@@ -117,12 +129,11 @@ async def useAttack(self, message, weapon, special, rolls, max, healpercent, poi
         await message.send(
             content=f'{sending} \n**{message.author.id}** has won the duel with **{sendingUser.hitpoints}** HP left!',
             file=discord.File('./hpbar.png'))
-        await self.updateDB(sendingUser.user, receivingUser.user)
+        await update_db_with_duel_results(sendingUser.user, receivingUser.user)
         del globals.duels[message.channel.id]
 
         if channelDuel.stakeItem == None:
-            await PotentialItems.generateLoot(self, message)
-            await self.rollForRares(message, sendingUser.user)
+            await roll_pking_table_loot(message)
         else:
             itemToWin = channelDuel.stakeItem
             numberToWin = channelDuel.stakeQuantity * 2
@@ -131,7 +142,7 @@ async def useAttack(self, message, weapon, special, rolls, max, healpercent, poi
                 await message.send(f"**{message.author.id}** has won {channelDuel.shortQuantity} GP.")
             else:
                 await message.send(f"**{message.author.id}** has won {numberToWin} {channelDuel.itemLongName}.")
-            await Economy(self.bot).giveItemToUser(message.author.id, table, itemToWin, numberToWin)
+            await give_item_to_user(message.author.id, table, itemToWin, numberToWin)
         return
 
     # calculates special energy remaining and adds to message
@@ -148,4 +159,4 @@ async def useAttack(self, message, weapon, special, rolls, max, healpercent, poi
     channelDuel.turnCount += 1
 
     # Start the timer to check if another turn is taken
-    await self.turnChecker(message, channelDuel)
+    await turnChecker(message, channelDuel)

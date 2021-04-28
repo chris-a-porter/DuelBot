@@ -1,9 +1,12 @@
 import psycopg2
+import os
 
 # Update the winne and loser's kill/death in the database
 
+DATABASE_URL = os.environ['DATABASE_URL']
 
-async def update_db_with_duel_results(self, winner, loser):
+
+async def update_db_with_duel_results(winner, loser):
     # 1st command for the winner
     # 2nd command for the loser
     # gp included in case user has never had row created for them
