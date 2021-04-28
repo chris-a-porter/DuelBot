@@ -87,7 +87,7 @@ def add_item_to_inventory_grid(grid_image, item_image, index):
 
 
 # Generate an image of some loot
-async def generate_loot_image(ctx, loot):
+async def generate_loot_image(ctx, loot, value, message=None):
 
     looting_bag_background = scale_image(Image.open('assets/LootingBag.png').convert("RGBA"))
     looting_bag_inventory = generate_inventory_grid()
@@ -107,9 +107,13 @@ async def generate_loot_image(ctx, loot):
 
     looting_bag_background.paste(looting_bag_inventory, (180, 310), mask=looting_bag_inventory)
     add_header_to_loot_image(looting_bag_background, ctx.author.name)
-    add_footer_value_to_image(looting_bag_background, 1234567)
+    add_footer_value_to_image(looting_bag_background, value)
 
     with io.BytesIO() as image_binary:
         looting_bag_background.save(image_binary, 'PNG')
         image_binary.seek(0)
+
+        await message.delete()
         await ctx.send(file=discord.File(fp=image_binary, filename='image.png'))
+
+    return image_binary

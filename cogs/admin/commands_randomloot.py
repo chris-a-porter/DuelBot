@@ -1,7 +1,21 @@
 from ..economy.loot.generate_loot_v2 import generate_loot_pile
 from ..economy.loot.generate_loot_image import generate_loot_image
+from ..economy.item_data.fetch_price import fetch_price
+from ..economy.loot.calculate_loot_pile_value import calculate_loot_pile_value
+import discord
+import io
+
+from ..economy.bank.give_loot_pile_to_user import give_loot_pile_to_user
 
 
 async def randomloot(ctx):
-    loot_pile = generate_loot_pile(10, 12)
-    await generate_loot_image(ctx, loot_pile)
+
+    print("Generating random loot...")
+
+    msg = await ctx.send("Checking the loot pile...")
+
+    loot_pile = generate_loot_pile(20, 28)
+    loot_pile_value = await calculate_loot_pile_value(loot_pile)
+
+    await give_loot_pile_to_user(ctx.author.id, loot_pile)
+    await generate_loot_image(ctx, loot_pile, loot_pile_value, message=msg)

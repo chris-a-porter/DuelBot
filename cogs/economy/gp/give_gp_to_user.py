@@ -4,7 +4,7 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def give_gp_to_user(self, message, user_id, amount):
+async def give_gp_to_user(message, user_id, amount):
 
     sql = f"""
     UPDATE duel_users 

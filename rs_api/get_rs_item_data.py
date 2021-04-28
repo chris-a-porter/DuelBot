@@ -1,6 +1,6 @@
 import requests
 
-async def get_rs_item_data(self, id):
+async def get_rs_item_data(id):
     url = f'http://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item={id}'
 
     try:
