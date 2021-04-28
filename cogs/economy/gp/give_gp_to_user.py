@@ -4,12 +4,11 @@ import os
 DATABASE_URL = os.environ['DATABASE_URL']
 
 
-async def give_gp_to_user(message, user_id, amount):
+async def give_gp_to_user(message, amount):
 
     sql = f"""
-    UPDATE duel_users 
-    SET gp = gp + {amount} 
-    WHERE user_id = {user_id}
+    INSERT INTO user_items (user_id, item_id, quantity) VALUES ({message.author.id}, 995, {amount})
+    ON CONFLICT (user_id, item_id) DO UPDATE SET quantity = user_items.quantity + EXCLUDED.quantity
     """
     conn = None
 

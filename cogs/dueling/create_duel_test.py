@@ -164,14 +164,14 @@ async def createDuel(self, message, *args):
                 if message.author.id == user.id:
                     await message.send(f"You don't have {_shortItemName} to stake.")
                 else:
-                    await message.send(f"{user.id} does not {_shortItemName} to stake.")
+                    await message.send(f"{user.name} does not {_shortItemName} to stake.")
             else:
                 shortQuantity = short_numify(_itemQuantity, 1)
 
                 if message.author.id == user.id:
                     await message.send(f"You don't have {shortQuantity} {_fullItemName} to stake.")
                 else:
-                    await message.send(f"{user.id} does not have {shortQuantity} {_fullItemName} to stake")
+                    await message.send(f"{user.name} does not have {shortQuantity} {_fullItemName} to stake")
             return False
         elif _userQuantity >= _itemQuantity:
             return True
@@ -293,7 +293,7 @@ async def createDuel(self, message, *args):
             player1HasQuantityStill = await checkUsersItemQuantity(channelDuel.user_1.user)
             if player1HasQuantityStill == False:
                 await message.send(
-                    f"Cancelling the duel because {channelDuel.user_1.user.id} no longer has {short_numify(stakeParams[1], 1)} {stakeType[1]}.")
+                    f"Cancelling the duel because {channelDuel.user_1.user.name} no longer has {short_numify(stakeParams[1], 1)} {stakeType[1]}.")
                 del globals.duels[message.channel.id]
                 return
         elif stakeType[1].replace(' ', '').lower() != channelDuel.itemLongName.replace(' ', '').lower():
@@ -326,7 +326,7 @@ async def createDuel(self, message, *args):
         pass
 
     await message.send(
-        f"Beginning duel between {channelDuel.user_1.user.id} and {channelDuel.user_2.user.id} \n**{startingUser.user.id}** goes first.")
+        f"Beginning duel between {channelDuel.user_1.user.name} and {channelDuel.user_2.user.name} \n**{startingUser.user.name}** goes first.")
 
     if channelDuel.user_1 != None and channelDuel.user_2 != None:
         await self.beginFightTurnChecker(message, channelDuel)

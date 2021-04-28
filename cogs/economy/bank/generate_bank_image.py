@@ -89,10 +89,17 @@ async def generate_bank_image(ctx):
     for num, item in enumerate(bank_items[0:48]):
 
         item_image = scale_image(Image.open(f'assets/items-icons/{item[0]}.png').convert("RGBA"), 10)
+
+        if item[0] == 995:
+            item_image = scale_image(Image.open(f'assets/items-icons/1004.png').convert("RGBA"), 10)
+
         draw = ImageDraw.Draw(item_image)
 
-        draw.text((10, 10), f"{item[1]}", (0, 0, 0), font=font)
-        draw.text((0, 0), f"{item[1]}", (255, 255, 0), font=font)
+        adjusted_price = item[1] if item[1] < 100000 else short_numify(item[1], 1)
+        adjusted_color = (255, 255, 0) if item[1] < 100000 else (0, 0, 0) if item[1] < 10000000 else (0, 255, 0)
+
+        draw.text((10, 10), f"{adjusted_price}", (0, 0, 0), font=font)
+        draw.text((0, 0), f"{adjusted_price}", adjusted_color, font=font)
 
         # Calculate coordinates
         row = math.floor(num / 8)

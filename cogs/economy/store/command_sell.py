@@ -63,29 +63,10 @@ async def command_sell(ctx, *args):
 
     item_name = await convert_args_to_item_string(args)
 
+    item_id = get
+
     # Get the quantity of the item, formatted as int
     item_quantity = await convert_args_to_quantity(args[0])
-
-    # Find item in one of the dictionaries
-    if item_name in rare_items.keys():
-        # If the item is a rare
-        item_id = rare_items[item_name][0]
-        item_price = rare_items[item_name][1]
-        item_string = rare_items[item_name][2]
-        table = "duel_rares"
-    elif item_name in pk_items.values():
-        # if the item is a regular item
-        item_id = get_key(item_name, pk_items)
-        item_price = await get_item_value(item_id)
-        item_string = get_full_item_name(item_id)
-        table = "pking_items"
-    else:
-        await ctx.send("I don't buy that item.")
-        return
-
-    if item_price is None:
-        await ctx.send("There was an error fetching the item price. Please try again.")
-        return
 
     player_quantity = await get_number_of_item_owned_by_player(ctx.author.id, table, f"_{item_id}")
 

@@ -1,5 +1,6 @@
 import globals
 import asyncio
+from .update_db_with_duel_results import update_db_with_duel_results
 
 async def beginFightTurnChecker(message, duel):
     channelDuel = globals.duels.get(message.channel.id, None)
@@ -54,7 +55,7 @@ async def beginFightTurnChecker(message, duel):
                globals.duels[message.channel.id].turnCount
 
     try:
-        msg = await self.bot.wait_for('message', check=checkParameters, timeout=90)
+        msg = await globals.bot.wait_for('message', check=checkParameters, timeout=180)
 
     except asyncio.TimeoutError:
         # called when it times out
@@ -74,6 +75,5 @@ async def beginFightTurnChecker(message, duel):
             turnUser = channelDuel.user_2
             notTurn = channelDuel.user_1
         await message.channel.send(
-            f'{turnUser.user.id} took too long to take their turn. {notTurn.user.id} wins the duel.')
-        await self.updateDB(notTurn.user, turnUser.user)
+            f'The duel ran too long and has been timed out. Duels can only last a a maximum of three minutes.')
         globals.duels[message.channel.id] = None
