@@ -5,6 +5,7 @@ from .gp.command_gp import gp
 from .gp.command_pay import pay as command_pay
 from .store.command_rares import command_rares
 from .store.command_items import command_items
+from .bank.command_bank import command_bank
 
 
 class EconomyCommands(commands.Cog):
@@ -35,6 +36,10 @@ class EconomyCommands(commands.Cog):
     @commands.command()
     async def rares(self, ctx):
         await command_rares(ctx)
+
+    @commands.command()
+    async def b(self, ctx):
+        await command_bank(ctx)
 
 
 def setup(bot):

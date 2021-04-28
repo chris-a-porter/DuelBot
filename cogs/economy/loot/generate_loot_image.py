@@ -101,6 +101,7 @@ async def generate_loot_image(ctx, loot, value, message=None):
         draw = ImageDraw.Draw(abyssal_whip_image)
 
         if loot[key] > 1:
+            draw.text((5, 5), f"{loot[key]}", (0, 0, 0), font=font)
             draw.text((0, 0), f"{loot[key]}", (255, 255, 0), font=font)
 
         looting_bag_inventory = add_item_to_inventory_grid(looting_bag_inventory, abyssal_whip_image, num)

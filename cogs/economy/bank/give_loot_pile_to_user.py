@@ -20,8 +20,6 @@ async def give_loot_pile_to_user(user_id, loot_pile):
 
     insert_query = insert_query + " ON CONFLICT (user_id, item_id) DO UPDATE SET quantity = user_items.quantity + EXCLUDED.quantity"
 
-    print(insert_query)
-
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cur = conn.cursor()

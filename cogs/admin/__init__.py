@@ -28,5 +28,6 @@ class AdminCommands(commands.Cog):
         await randomloot(ctx)
 
 
+
 def setup(bot):
     bot.add_cog(AdminCommands(bot))
