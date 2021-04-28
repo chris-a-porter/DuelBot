@@ -42,7 +42,7 @@ def make_hitpoints_image(hitpoints, freeze, poison):
     draw = ImageDraw.Draw(img)
 
     # Load the Runescape font
-    font = ImageFont.truetype(r'./HelveticaNeue.ttc', 16)
+    font = ImageFont.truetype('assets/osrs-font-bold.ttf', 16)
 
     # Add text containing info about the remaining HP to the image
     draw.text((80, 10), f"{hitpoints}/99", (0, 0, 0), font=font)
